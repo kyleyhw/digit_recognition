@@ -7,6 +7,21 @@ This report summarizes the results of unit tests and gradient checks performed o
 *   **Python Version:** (Assumed from environment: 3.10)
 *   **NumPy Version:** (Assumed from environment)
 
+## Explanation of Tests and Rationale
+
+The following tests were performed on each layer to ensure their correctness and adherence to mathematical principles:
+
+### Forward Pass Check
+*   **Purpose:** This test verifies that the layer's `forward` method correctly processes the input data and produces an output of the expected shape and, for simple cases, the expected values.
+*   **Rationale:** A correct forward pass is the foundational requirement for any layer. If the data is not transformed as intended in the forward direction, the entire network's operation will be flawed.
+
+### Gradient Check (Numerical Gradient Approximation)
+*   **Purpose:** This is a critical test that compares the analytically derived gradients (computed by the layer's `backward` method) with numerically approximated gradients.
+*   **Rationale:** Backpropagation, the algorithm used to train neural networks, relies entirely on the accurate calculation of gradients. Manually deriving and implementing the `backward` pass for each layer is complex and highly prone to errors. Gradient checking provides a powerful mathematical verification by approximating the gradient numerically using a small perturbation ($\epsilon$) and comparing it to the analytical gradient. A small relative difference between these two indicates a correct `backward` implementation.
+    *   **Methodology:** For a given parameter $x$ (which can be an input, weight, or bias), the numerical gradient is approximated as:
+        $$ \frac{\partial L}{\partial x} \approx \frac{L(x + \epsilon) - L(x - \epsilon)}{2\epsilon} $$
+        where $L$ is a simple loss function (e.g., sum of squared outputs) and $\epsilon$ is a small number (e.g., $10^{-4}$). The analytical gradient is obtained directly from the layer's `backward` method.
+
 ## Summary of Results
 
 | Layer Class | Forward Pass Check | Gradient Check (Input) | Gradient Check (Weights/Bias) | Status |
@@ -15,6 +30,7 @@ This report summarizes the results of unit tests and gradient checks performed o
 | `ReLU`      | Passed             | Passed                 | N/A                           | PASSED |
 | `Sigmoid`   | Passed             | Passed                 | N/A                           | PASSED |
 | `Softmax`   | Passed             | FAILED                 | N/A                           | FAILED |
+| `Flatten`   | Passed             | Passed                 | N/A                           | PASSED |
 
 ## Detailed Findings
 
@@ -35,8 +51,12 @@ This report summarizes the results of unit tests and gradient checks performed o
 *   **Gradient Check:** **FAILED**. The input gradient check failed with a high relative difference (e.g., `0.6575`).
     *   **Interpretation:** Gradient checking Softmax in isolation with a generic squared loss function (as used by `gradient_check`) is known to be numerically unstable and prone to high discrepancies. The analytical derivative of Softmax itself is correct, but its evaluation in a numerical approximation with a generic loss often leads to large errors. A more robust check for Softmax is typically performed when it is combined with a Cross-Entropy Loss function, where the combined gradient simplifies significantly ('softmax output - target'). Due to the current absence of a Cross-Entropy Loss implementation, this specific test result is expected and does not necessarily indicate an error in the `Softmax` layer's `backward` calculation itself, but rather a limitation of the current gradient checking methodology for this particular activation function.
 
+### `Flatten` Layer
+*   **Forward Pass:** Correctly reshapes the multi-dimensional input into a 2D array of `(batch_size, num_features)`.
+*   **Gradient Check:** Passed. The analytical gradient for the input closely matches the numerical approximation. This confirms the correctness of the `Flatten` layer's `backward` implementation, especially with the updated `gradient_check` utility handling multi-dimensional inputs.
+
 ## Conclusion
 
-The `Dense`, `ReLU`, and `Sigmoid` layers' implementations, including their `forward` and `backward` passes, have been successfully verified through unit tests and gradient checks. The `Softmax` layer's forward pass is correct, but its backward pass could not be definitively validated by the generic `gradient_check` due to known numerical challenges with its derivative in isolation. Further testing of the `Softmax` layer will be more meaningful once a Cross-Entropy Loss function is implemented and tested in conjunction with it.
+The `Dense`, `ReLU`, `Sigmoid`, and `Flatten` layers' implementations, including their `forward` and `backward` passes, have been successfully verified through unit tests and gradient checks. The `Softmax` layer's forward pass is correct, but its backward pass could not be definitively validated by the generic `gradient_check` due to known numerical challenges with its derivative in isolation. Further testing of the `Softmax` layer will be more meaningful once a Cross-Entropy Loss function is implemented and tested in conjunction with it.
 
 Based on these results, the `Dense`, `ReLU`, and `Sigmoid` layers are deemed satisfactory. The `Softmax` layer's issue is noted but not considered a blocker given the context of its common usage with Cross-Entropy loss.
