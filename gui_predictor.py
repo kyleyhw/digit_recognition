@@ -3,6 +3,9 @@ from tkinter import Canvas, Label, Button
 import numpy as np
 from PIL import Image, ImageDraw, ImageOps
 import io
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
 
 from src.network import Network
 from src.layers import Convolutional, ReLU, MaxPooling, Flatten, Dense, Softmax
