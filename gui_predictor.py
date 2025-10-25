@@ -29,15 +29,11 @@ class DigitRecognizerGUI:
         self.canvas = Canvas(main_frame, width=self.canvas_width, height=self.canvas_height, bg='black')
         self.canvas.pack(side=tk.LEFT)
 
-        # Frame for probabilities
-        prob_frame = tk.Frame(main_frame)
-        prob_frame.pack(side=tk.RIGHT, padx=20)
-
-        self.prob_labels = []
-        for i in range(10):
-            label = Label(prob_frame, text=f"{i}: 0.00%", font=("Helvetica", 14), anchor='w')
-            label.pack(fill='x')
-            self.prob_labels.append(label)
+        # Canvas for probability bar chart
+        self.prob_canvas_width = 200
+        self.prob_canvas_height = self.canvas_height
+        self.prob_canvas = Canvas(main_frame, width=self.prob_canvas_width, height=self.prob_canvas_height)
+        self.prob_canvas.pack(side=tk.RIGHT, padx=20)
 
         self.clear_button = Button(master, text="Clear", command=self.clear_canvas, font=("Helvetica", 14))
         self.clear_button.pack(pady=10)
@@ -49,6 +45,7 @@ class DigitRecognizerGUI:
         self.image_array = np.zeros((self.rows, self.cols))
         self.drawing_changed = False
         self.create_grid()
+        self.init_prob_chart()
 
         self.load_network()
         self.predict_loop()
@@ -61,6 +58,22 @@ class DigitRecognizerGUI:
                 x2 = x1 + self.pixel_size
                 y2 = y1 + self.pixel_size
                 self.pixel_grid[r][c] = self.canvas.create_rectangle(x1, y1, x2, y2, fill="black", outline="#222")
+
+    def init_prob_chart(self):
+        self.prob_bars = []
+        self.prob_texts = []
+        bar_height = self.prob_canvas_height / 10
+        for i in range(10):
+            y1 = i * bar_height
+            y2 = y1 + bar_height
+            # Create text label for the digit
+            self.prob_canvas.create_text(10, y1 + bar_height/2, text=str(i), font=("Helvetica", 12), anchor='w')
+            # Create the bar (initially zero width)
+            bar = self.prob_canvas.create_rectangle(25, y1 + 5, 25, y2 - 5, fill="gray", outline="")
+            self.prob_bars.append(bar)
+            # Create text for the percentage
+            text = self.prob_canvas.create_text(30, y1 + bar_height/2, text="0%", font=("Helvetica", 10), anchor='w')
+            self.prob_texts.append(text)
 
     def paint(self, event):
         col = event.x // self.pixel_size
@@ -120,14 +133,19 @@ class DigitRecognizerGUI:
                 prediction_vector = self.net.predict(processed_image)
             
             predicted_class = np.argmax(prediction_vector)
+            max_bar_width = self.prob_canvas_width - 30 # Max width for a bar
 
-            for i, label in enumerate(self.prob_labels):
-                prob = prediction_vector[0, i] * 100
-                label.config(text=f"{i}: {prob:.2f}%")
-                if i == predicted_class:
-                    label.config(font=("Helvetica", 14, "bold"), fg="green")
-                else:
-                    label.config(font=("Helvetica", 14, "normal"), fg="black")
+            for i in range(10):
+                prob = prediction_vector[0, i]
+                bar_width = 25 + prob * max_bar_width
+                
+                bar_color = "green" if i == predicted_class else "gray"
+                self.prob_canvas.coords(self.prob_bars[i], 25, i * (self.prob_canvas_height/10) + 5, bar_width, (i+1) * (self.prob_canvas_height/10) - 5)
+                self.prob_canvas.itemconfig(self.prob_bars[i], fill=bar_color)
+                
+                text_color = "white" if prob > 0.5 else "black"
+                self.prob_canvas.itemconfig(self.prob_texts[i], text=f"{prob*100:.1f}%", fill=text_color)
+                self.prob_canvas.coords(self.prob_texts[i], bar_width - 5, i * (self.prob_canvas_height/10) + (self.prob_canvas_height/20), anchor='e')
 
             self.drawing_changed = False
 
@@ -155,8 +173,6 @@ class DigitRecognizerGUI:
             print("\n--- Loading the Trained Model from 'models/mnist_cnn_subset_1000.npz' ---")
             self.net.load_model("models/mnist_cnn_subset_1000.npz")
         except FileNotFoundError:
-            for label in self.prob_labels:
-                label.config(text="Model not found!")
             print("\nERROR: Model file 'models/mnist_cnn_subset_1000.npz' not found.")
             print("Please run 'python train_mnist.py' first to train and save the model.")
 
