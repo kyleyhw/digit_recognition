@@ -149,7 +149,7 @@ class DigitRecognizerGUI:
 
             self.drawing_changed = False
 
-        self.master.after(250, self.predict_loop) # Schedule to run again
+        self.master.after(100, self.predict_loop) # Schedule to run again
 
     def load_network(self):
         print("--- Building the CNN Model Structure ---")
