@@ -1,6 +1,6 @@
 # Loss Functions Documentation
 
-Loss functions are a crucial component of neural networks, quantifying the discrepancy between the network's predictions and the true target values. During training, the goal of the optimization algorithm is to minimize this loss.
+Loss functions are a crucial component of neural networks. They measure how well the model's predictions match the true target values. The output of a loss function is a single scalar value, often referred to as the "loss" or "error," which quantifies the discrepancy. During training, the goal of the optimization algorithm (like Stochastic Gradient Descent) is to adjust the network's parameters (weights and biases) to minimize this loss.
 
 ## Base Class: `Loss`
 
@@ -23,96 +23,61 @@ class Loss:
 
 *   **Purpose:** Calculates the value of the loss function.
 *   **Parameters:**
-    *   `y_true`: The true target values.
+    *   `y_true`: The ground-truth target values (e.g., the actual digit labels).
     *   `y_pred`: The predicted values from the neural network.
-*   **Returns:** A scalar value representing the calculated loss.
-*   **Description:** This method must be implemented by subclasses to compute the specific loss value based on the true and predicted outputs.
+*   **Returns:** A scalar value representing the calculated loss for a batch of data.
 
 #### `prime(self, y_true, y_pred)`
 
-*   **Purpose:** Calculates the derivative of the loss function with respect to the predicted values (`y_pred`).
-*   **Parameters:**
-    *   `y_true`: The true target values.
-    *   `y_pred`: The predicted values from the neural network.
-*   **Returns:** An array of the same shape as `y_pred`, representing the gradient of the loss with respect to each predicted value.
-*   **Description:** This method must be implemented by subclasses to compute the gradient of the loss. This derivative is the `output_gradient` that is passed to the `backward` method of the last layer in the neural network during backpropagation.
+*   **Purpose:** Calculates the derivative (gradient) of the loss function with respect to the predicted values (`y_pred`).
+*   **Returns:** An array of the same shape as `y_pred`, representing the gradient of the loss.
+*   **Description:** This is the starting point for the backpropagation algorithm. It tells the final layer of the network how much it needs to change its output to reduce the loss.
 
 ---
 
 ## Specific Loss Functions
 
-### `MeanSquaredError`
+### `MeanSquaredError` (MSE)
 
-The `MeanSquaredError` (MSE) loss function is a common choice for regression problems. It quantifies the average squared difference between the predicted values and the true values.
-
-#### Class Definition
-
-```python
-class MeanSquaredError(Loss):
-    def loss(self, y_true, y_pred):
-        return np.mean(np.power(y_pred - y_true, 2))
-
-    def prime(self, y_true, y_pred):
-        return 2 * (y_pred - y_true) / y_true.size
-```
+The `MeanSquaredError` (MSE) loss function is primarily used for **regression problems**, where the goal is to predict a continuous value (e.g., the price of a house). It quantifies the average squared difference between the predicted and true values.
 
 #### Mathematical Explanation
 
 *   **Forward Pass (Loss Calculation):**
     The formula for MSE is:
-    $$ L = \frac{1}{N} \sum_{i=1}^{N} (y_{pred,i} - y_{true,i})^2 $$
-    Where:
-    *   $N$ is the number of samples.
-    *   $y_{pred,i}$ is the predicted value for the $i$-th sample.
-    *   $y_{true,i}$ is the true value for the $i$-th sample.
-    The errors are squared to ensure that positive and negative errors contribute equally to the loss, and to penalize larger errors more heavily. The mean is taken over all samples.
+    $ L = \frac{1}{N} \sum_{i=1}^{N} (y_{pred,i} - y_{true,i})^2 $
+    Where $N$ is the number of samples. The errors are squared to ensure that positive and negative errors contribute equally and to penalize larger errors more heavily.
 
 *   **Backward Pass (Derivative of Loss):**
-    The derivative of the MSE loss function with respect to the predicted values (`y_pred`) is:
-    $$ \frac{\partial L}{\partial y_{pred}} = \frac{2}{N} (y_{pred} - y_{true}) $$
-    This derivative is used as the `output_gradient` for the last layer during backpropagation.
+    The derivative of the MSE loss with respect to the predicted values is:
+    $ \frac{\partial L}{\partial y_{pred}} = \frac{2}{N} (y_{pred} - y_{true}) $
 
 ---
 
-
 ### `CategoricalCrossEntropy`
 
-The `CategoricalCrossEntropy` loss function is the standard choice for multi-class classification problems, especially when the output layer uses a `Softmax` activation function. It measures the difference between two probability distributions: the true labels (typically one-hot encoded) and the predicted probabilities.
+The `CategoricalCrossEntropy` loss function is the standard choice for **multi-class classification problems**, such as our MNIST digit recognition task. It is designed to work with a `Softmax` activation function on the output layer.
 
-#### Class Definition
+#### Core Concept: Cross-Entropy
 
-```python
-class CategoricalCrossEntropy(Loss):
-    def loss(self, y_true, y_pred):
-        # Clip y_pred to avoid log(0)
-        y_pred = np.clip(y_pred, 1e-12, 1 - 1e-12)
-        return -np.sum(y_true * np.log(y_pred)) / y_true.shape[0]
+Cross-entropy measures the difference between two probability distributions. In our case, these are:
+1.  The **true distribution**: The one-hot encoded label (e.g., for the digit '2', the distribution is `[0, 0, 1, 0, 0, 0, 0, 0, 0, 0]`).
+2.  The **predicted distribution**: The output of the `Softmax` layer (e.g., `[0.05, 0.1, 0.7, 0.05, ...]`)
 
-    def prime(self, y_true, y_pred):
-        # Clip y_pred to avoid division by zero
-        y_pred = np.clip(y_pred, 1e-12, 1 - 1e-12)
-        # Derivative for Softmax + Cross-Entropy is simply y_pred - y_true
-        # However, if we want the derivative of Cross-Entropy alone, it's:
-        return -y_true / y_pred / y_true.shape[0]
-```
+The loss is low when the predicted distribution is very similar to the true distribution (i.e., a high probability for the correct class).
 
 #### Mathematical Explanation
 
 *   **Forward Pass (Loss Calculation):**
     The formula for Categorical Cross-Entropy is:
-    $$ L = -\frac{1}{N} \sum_{i=1}^{N} \sum_{c=1}^{C} y_{true,ic} \log(y_{pred,ic}) $$
-    Where:
-    *   $N$ is the number of samples.
-    *   $C$ is the number of classes.
-    *   $y_{true,ic}$ is 1 if sample $i$ belongs to class $c$, and 0 otherwise (one-hot encoded).
-    *   $y_{pred,ic}$ is the predicted probability that sample $i$ belongs to class $c$.
-    The logarithm heavily penalizes incorrect predictions, especially when the predicted probability for the true class is very low. The negative sign makes the loss positive.
+    $ L = -\frac{1}{N} \sum_{i=1}^{N} \sum_{c=1}^{C} y_{true,ic} \log(y_{pred,ic}) $
+    Where $N$ is the number of samples and $C$ is the number of classes. Since `y_true` is one-hot encoded, this simplifies to just taking the negative log of the predicted probability for the single correct class.
 
 *   **Backward Pass (Derivative of Loss):**
     The derivative of the Categorical Cross-Entropy loss with respect to the predicted probabilities (`y_pred`) is:
-    $$ \frac{\partial L}{\partial y_{pred}} = -\frac{1}{N} \frac{y_{true}}{y_{pred}} $$
-    **Important Note:** When Categorical Cross-Entropy Loss is used immediately after a `Softmax` activation function, the combined derivative of the `Softmax` layer and the `CategoricalCrossEntropy` loss simplifies significantly to:
-    $$ \frac{\partial L}{\partial \text{input to Softmax}} = y_{pred} - y_{true} $$
-    This simplification is a key reason why these two are almost always used together. The `prime` method here calculates the derivative of the loss *with respect to the output of the Softmax layer*.
+    $ \frac{\partial L}{\partial y_{pred}} = -\frac{1}{N} \frac{y_{true}}{y_{pred}} $
+    **Important Note:** When this loss is used immediately after a `Softmax` activation function, the combined derivative (of `Softmax` and `CategoricalCrossEntropy`) simplifies to the very elegant and stable form:
+    $ \frac{\partial L}{\partial \text{input to Softmax}} = y_{pred} - y_{true} $
+    This simplification is a key reason why these two are almost always used together in classification tasks.
 
 ```

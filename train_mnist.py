@@ -9,12 +9,11 @@ def main():
     # Load the preprocessed data
     (x_train, y_train), (x_test, y_test) = preprocess_mnist_data()
     
-    # For faster development, let's use a subset of the data
-    # Remove these lines to train on the full dataset
-    x_train = x_train[:1000]
-    y_train = y_train[:1000]
-    x_test = x_test[:200]
-    y_test = y_test[:200]
+    # The full dataset is used for training
+    # x_train = x_train[:1000]
+    # y_train = y_train[:1000]
+    # x_test = x_test[:200]
+    # y_test = y_test[:200]
     
     print(f"Training data shape: {x_train.shape}")
     print(f"Test data shape: {x_test.shape}")
@@ -59,6 +58,10 @@ def main():
     print("\n--- Training the Network ---")
     net.train(x_train, y_train, epochs=10, learning_rate=0.01, batch_size=32)
 
+    # --- Save the Trained Model ---
+    print("\n--- Saving the Trained Model ---")
+    net.save_model("mnist_cnn.npz")
+
     # --- Evaluate the Network ---
     print("\n--- Evaluating the Network ---")
     total_correct = 0
@@ -76,7 +79,9 @@ def main():
         if predicted_class == true_class:
             total_correct += 1
             
-        print(f"Sample {i+1}: Predicted: {predicted_class}, True: {true_class}")
+        # Print progress for a few samples
+        if i < 10 or i > len(x_test) - 10:
+            print(f"Sample {i+1}: Predicted: {predicted_class}, True: {true_class}")
 
     accuracy = (total_correct / len(x_test)) * 100
     print(f"\nTest Accuracy: {accuracy:.2f}%")

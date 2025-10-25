@@ -80,3 +80,30 @@ class Network:
         Makes predictions using the trained network.
         """
         return self.forward(input_data)
+
+    def save_model(self, filepath):
+        """
+        Saves the weights and biases of all layers with parameters to a .npz file.
+        """
+        params = {}
+        for i, layer in enumerate(self.layers):
+            if hasattr(layer, 'weights'):
+                params[f'weights_{i}'] = layer.weights
+            if hasattr(layer, 'bias'):
+                params[f'bias_{i}'] = layer.bias
+        
+        np.savez_compressed(filepath, **params)
+        print(f"Model saved to {filepath}")
+
+    def load_model(self, filepath):
+        """
+        Loads weights and biases from a .npz file into the network layers.
+        The network architecture must match the saved model.
+        """
+        data = np.load(filepath)
+        for i, layer in enumerate(self.layers):
+            if hasattr(layer, 'weights'):
+                layer.weights = data[f'weights_{i}']
+            if hasattr(layer, 'bias'):
+                layer.bias = data[f'bias_{i}']
+        print(f"Model loaded from {filepath}")

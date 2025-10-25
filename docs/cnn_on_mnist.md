@@ -58,3 +58,13 @@ python train_mnist.py
 ```
 
 The script will print the training loss for each epoch and, upon completion, will display the final test accuracy.
+
+## Key Concepts in this Script
+
+*   **Convolutional Layer:** The core building block of a CNN. It uses a set of learnable filters (or kernels) to detect features like edges, corners, and textures in an image.
+*   **ReLU (Rectified Linear Unit):** A simple yet powerful activation function that introduces non-linearity by outputting the input directly if it is positive, and zero otherwise. This helps the network learn more complex patterns.
+*   **MaxPooling Layer:** A down-sampling technique that reduces the spatial dimensions of the feature maps. It works by taking the maximum value over a window of the input, which helps to make the learned features more robust to small translations in the input image.
+*   **Flatten Layer:** A utility layer that reshapes a multi-dimensional tensor into a 1D vector. This is a necessary step to transition from the convolutional/pooling layers to the fully connected dense layers.
+*   **Dense Layer:** A standard fully connected neural network layer where each input neuron is connected to each output neuron. These layers are typically used in the final stages of a CNN to perform classification based on the features extracted by the convolutional layers.
+*   **Softmax Layer:** An activation function used in the output layer for multi-class classification. It converts the raw output scores (logits) from the final dense layer into a probability distribution over the classes, where all probabilities sum to 1.
+*   **Categorical Cross-Entropy Loss:** The loss function used for multi-class classification. It measures the difference between the predicted probability distribution (from the Softmax layer) and the true distribution (the one-hot encoded label).

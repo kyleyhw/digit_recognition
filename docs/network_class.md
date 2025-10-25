@@ -1,6 +1,13 @@
 # Network Class Documentation
 
-The `Network` class serves as the central orchestrator for building and training sequential neural network models. It provides a simple interface to add layers, perform forward and backward passes, and manage the training process.
+The `Network` class is the heart of our neural network library. It acts as a container for a sequence of layers, and provides the core logic to train the model on data and make predictions.
+
+## Core Concepts
+
+*   **Sequential Model:** This `Network` class represents a sequential model, which is a linear stack of layers. You simply `.add()` layers one after another to build the model architecture.
+*   **Training Loop:** The process of training a neural network involves repeatedly showing it data, allowing it to make predictions, comparing those predictions to the true targets (calculating the **loss**), and then adjusting the internal parameters (weights and biases) to reduce that loss. This adjustment process is called **backpropagation** and is driven by an **optimizer** (in our case, Stochastic Gradient Descent).
+*   **Epoch:** One complete pass through the entire training dataset.
+*   **Batch:** Instead of processing the entire dataset at once, the data is broken into smaller chunks called batches. The network's parameters are updated after each batch. This is known as **mini-batch gradient descent**.
 
 ## Class Definition
 
@@ -28,30 +35,7 @@ class Network:
             gradient = layer.backward(gradient, learning_rate)
 
     def train(self, X_train, y_train, epochs, learning_rate, batch_size=32):
-        if self.loss_function is None:
-            raise ValueError("Loss function not compiled. Call network.compile(loss_function) first.")
-
-        num_samples = X_train.shape[0]
-
-        for epoch in range(epochs):
-            total_loss = 0
-            permutation = np.random.permutation(num_samples)
-            X_shuffled = X_train[permutation]
-            y_shuffled = y_train[permutation]
-
-            for i in range(0, num_samples, batch_size):
-                X_batch = X_shuffled[i:i + batch_size]
-                y_batch = y_shuffled[i:i + batch_size]
-
-                output = self.forward(X_batch)
-                loss = self.loss_function.loss(y_batch, output)
-                total_loss += loss
-
-                output_gradient = self.loss_function.prime(y_batch, output)
-                self.backward(output_gradient, learning_rate)
-            
-            avg_loss = total_loss / (num_samples / batch_size)
-            print(f"Epoch {epoch+1}/{epochs}, Loss: {avg_loss:.4f}")
+        # ... (Implementation details in file)
 
     def predict(self, input_data):
         return self.forward(input_data)
@@ -61,54 +45,68 @@ class Network:
 
 ### `__init__(self)`
 
-*   **Purpose:** Initializes a new `Network` instance.
-*   **Description:** Creates an empty list `self.layers` to store the network layers and initializes `self.loss_function` to `None`.
+*   **Purpose:** Initializes a new, empty `Network` instance.
+*   **Description:** Creates an empty list `self.layers` which will store the neural network layers in sequential order, and initializes `self.loss_function` to `None`.
 
 ### `add(self, layer)`
 
 *   **Purpose:** Adds a layer to the neural network.
 *   **Parameters:**
     *   `layer`: An instance of a class inheriting from `Layer` (e.g., `Dense`, `ReLU`, `Convolutional`).
-*   **Description:** Appends the provided `layer` object to the `self.layers` list. Layers are processed in the order they are added.
+*   **Description:** Appends the provided `layer` object to the `self.layers` list. The order in which layers are added defines the architecture of the network.
 
 ### `compile(self, loss_function)`
 
 *   **Purpose:** Configures the model for training.
 *   **Parameters:**
     *   `loss_function`: An instance of a class inheriting from `Loss` (e.g., `MeanSquaredError`).
-*   **Description:** Assigns the specified loss function to the network. This method must be called before training.
+*   **Description:** Assigns the specified loss function to the network. This method must be called before training can begin.
 
 ### `forward(self, input_data)`
 
-*   **Purpose:** Performs the forward pass through all layers in the network.
+*   **Purpose:** Performs the forward pass, propagating input data through all layers in the network.
 *   **Parameters:**
     *   `input_data`: The input data for the network (e.g., a batch of images).
-*   **Returns:** The output of the last layer after processing the `input_data` through the entire network.
-*   **Description:** Iterates through each layer in `self.layers` sequentially, passing the output of the current layer as the input to the next layer.
+*   **Returns:** The output of the final layer after processing the `input_data` through the entire network.
+*   **Description:** This method takes an input and passes it through each layer sequentially, with the output of one layer becoming the input for the next.
 
 ### `backward(self, output_gradient, learning_rate)`
 
 *   **Purpose:** Performs the backward pass (backpropagation) through all layers in reverse order.
 *   **Parameters:**
-    *   `output_gradient`: The gradient of the loss function with respect to the output of the last layer. This is typically obtained from the derivative of the chosen loss function.
-    *   `learning_rate`: The learning rate used to update the trainable parameters (weights and biases) of the layers during backpropagation.
-*   **Description:** Iterates through the layers in `self.layers` in reverse order. For each layer, it calls its `backward` method, passing the `output_gradient` from the subsequent layer and the `learning_rate`. The `backward` method of each layer computes the gradients with respect to its own parameters and its input, and then returns the gradient with respect to its input, which becomes the `output_gradient` for the preceding layer.
+    *   `output_gradient`: The gradient of the loss function with respect to the output of the last layer. This is the starting point for backpropagation.
+    *   `learning_rate`: A hyperparameter that controls how much the weights and biases are adjusted during training. A smaller learning rate leads to slower but potentially more stable learning.
+*   **Description:** This method propagates the error gradient backward through the network. It starts with the gradient from the loss function and passes it to the last layer. Each layer then calculates the gradient with respect to its own parameters (and updates them), and passes the gradient with respect to its input to the previous layer in the sequence.
 
 ### `train(self, X_train, y_train, epochs, learning_rate, batch_size=32)`
 
-*   **Purpose:** Orchestrates the training loop of the neural network using mini-batch stochastic gradient descent (SGD).
+*   **Purpose:** Orchestrates the full training loop of the neural network using mini-batch stochastic gradient descent (SGD).
 *   **Parameters:**
-    *   `X_train`: Training input data.
-    *   `y_train`: Training target labels.
-    *   `epochs`: The number of times to iterate over the entire training dataset.
-    *   `learning_rate`: The learning rate for parameter updates.
-    *   `batch_size`: The number of samples per gradient update.
-*   **Description:** This method iterates through the specified number of epochs. In each epoch, it shuffles the training data and processes it in mini-batches. For each batch, it performs a forward pass to get predictions, calculates the loss, and then performs a backward pass to update the network's parameters. The average loss for each epoch is printed to the console.
+    *   `X_train`: The set of training input data.
+    *   `y_train`: The set of corresponding true target labels.
+    *   `epochs`: The number of times the entire training dataset is passed through the network.
+    *   `learning_rate`: The step size for the optimizer.
+    *   `batch_size`: The number of training samples to process before updating the model's parameters.
+*   **Description:** This is the main engine of learning. It iterates through the specified number of epochs. In each epoch, it shuffles the training data and processes it in mini-batches. For each batch, it performs a forward pass to get predictions, calculates the loss and its gradient, and then performs a backward pass to update all the network's trainable parameters.
 
 ### `predict(self, input_data)`
 
-*   **Purpose:** Makes predictions using the trained network.
+*   **Purpose:** Makes predictions on new, unseen data using the trained network.
 *   **Parameters:**
     *   `input_data`: The input data for which to make predictions.
-*   **Returns:** The network's output (predictions) for the given input data.
-*   **Description:** This method performs a forward pass through the network without any gradient calculations or parameter updates.
+*   **Returns:** The network's final output (e.g., class probabilities from a Softmax layer).
+*   **Description:** This method simply performs a forward pass through the network. It does not perform any learning or parameter updates.
+
+### `save_model(self, filepath)`
+
+*   **Purpose:** Saves the weights and biases of all layers with parameters to a `.npz` file.
+*   **Parameters:**
+    *   `filepath`: The path to the file where the model parameters will be saved.
+*   **Description:** Iterates through all layers in the network and saves the `weights` and `bias` arrays from each layer that has them (e.g., `Dense`, `Convolutional`) into a single compressed NumPy file.
+
+### `load_model(self, filepath)`
+
+*   **Purpose:** Loads weights and biases from a `.npz` file into the network layers.
+*   **Parameters:**
+    *   `filepath`: The path to the file from which to load the model parameters.
+*   **Description:** Loads the parameters from the specified file and assigns them to the corresponding layers in the network. The network architecture defined in the code must be identical to the one used when the model was saved.
