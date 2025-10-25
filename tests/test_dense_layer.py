@@ -4,6 +4,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import numpy as np
 from layers import Dense, Layer # Assuming Layer is also in layers.py
+import time # For timing tests
 
 # --- Gradient Checking Utility ---
 def gradient_check(layer, input_data_original, epsilon=1e-4):
@@ -168,12 +169,20 @@ def test_dense_layer():
     # output_gradient is no longer needed here as gradient_check generates it
     
     # Forward pass check (simple inspection)
+    start_time = time.time()
     output = dense_layer.forward(input_data)
+    end_time = time.time()
+    forward_time = end_time - start_time
     print(f"Dense Layer Output Shape: {output.shape}")
     assert output.shape == (batch_size, output_size)
+    print(f"Forward pass took {forward_time:.4f} seconds.")
 
     # Backward pass and gradient check
-    gradient_check(dense_layer, input_data.copy()) # Removed output_gradient
+    start_time = time.time()
+    gradient_check(dense_layer, input_data.copy())
+    end_time = time.time()
+    backward_time = end_time - start_time
+    print(f"Backward pass (gradient check) took {backward_time:.4f} seconds.")
 
 
 if __name__ == "__main__":
