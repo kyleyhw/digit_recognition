@@ -1,7 +1,7 @@
 import numpy as np
-from network import Network
-from layers import Convolutional, ReLU, MaxPooling, Flatten, Dense, Softmax
-from losses import CategoricalCrossEntropy
+from src.network import Network
+from src.layers import Convolutional, ReLU, MaxPooling, Flatten, Dense, Softmax
+from src.losses import CategoricalCrossEntropy
 from preprocess_mnist import preprocess_mnist_data # Assuming this function is available
 
 def main():
@@ -61,7 +61,7 @@ def main():
 
     # --- Save the Trained Model ---
     print("\n--- Saving the Trained Model ---")
-    net.save_model("mnist_cnn.npz")
+    net.save_model("models/mnist_cnn_subset_1000.npz")
 
     # --- Evaluate the Network ---
     print("\n--- Evaluating the Network ---")

@@ -1,6 +1,6 @@
 import numpy as np
-from network import Network
-from layers import Convolutional, ReLU, MaxPooling, Flatten, Dense, Softmax
+from src.network import Network
+from src.layers import Convolutional, ReLU, MaxPooling, Flatten, Dense, Softmax
 from preprocess_mnist import preprocess_mnist_data
 
 def main():
@@ -31,7 +31,7 @@ def main():
     # --- Load the Trained Model ---
     try:
         print("\n--- Loading the Trained Model from 'mnist_cnn.npz' ---")
-        net.load_model("mnist_cnn.npz")
+        net.load_model("models/mnist_cnn_subset_1000.npz")
     except FileNotFoundError:
         print("\nERROR: Model file 'mnist_cnn.npz' not found.")
         print("Please run 'python train_mnist.py' first to train and save the model.")

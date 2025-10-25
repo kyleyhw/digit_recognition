@@ -32,14 +32,16 @@ This repository contains a from-scratch implementation of:
 ```
 .
 ├── docs/                 # Detailed documentation for concepts and classes.
-├── layers.py             # Implementation of all neural network layers.
-├── losses.py             # Implementation of loss functions.
-├── mnist_data/           # Directory for storing MNIST data.
-├── network.py            # The main Network class for building models.
-├── preprocess_mnist.py   # Script to normalize and prepare MNIST data.
-├── predict_mnist.py      # Script to load a trained model and make predictions.
-├── test_reports/         # Detailed reports from running the test suite.
+├── models/               # Saved model parameters.
+├── src/                  # Core library code for the neural network.
+│   ├── __init__.py
+│   ├── layers.py
+│   ├── losses.py
+│   └── network.py
 ├── tests/                # Unit tests for each component.
+├── test_reports/         # Detailed reports from running the test suite.
+├── preprocess_mnist.py   # Script to download and preprocess MNIST data.
+├── predict_mnist.py      # Script to load a trained model and make predictions.
 └── train_mnist.py        # Main script to build, train, and evaluate the CNN.
 ```
 

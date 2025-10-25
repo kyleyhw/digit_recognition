@@ -3,9 +3,9 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import numpy as np
-from network import Network
-from layers import Dense, ReLU
-from losses import MeanSquaredError
+from src.network import Network
+from src.layers import Dense, ReLU
+from src.losses import MeanSquaredError
 import time
 
 # --- Test Network Training ---

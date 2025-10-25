@@ -3,7 +3,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import numpy as np
-from layers import ReLU, Layer
+from src.layers import ReLU, Layer
 from tests.test_dense_layer import gradient_check # Reusing the gradient_check utility
 import time # For timing tests
 

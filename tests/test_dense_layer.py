@@ -3,7 +3,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import numpy as np
-from layers import Dense, Layer # Assuming Layer is also in layers.py
+from src.layers import Dense, Layer # Assuming Layer is also in layers.py
 import time # For timing tests
 
 # --- Gradient Checking Utility ---
