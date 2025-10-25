@@ -406,7 +406,81 @@ class Convolutional(Layer):
                     row_idx = b * out_height * out_width + h * out_width + w
                     patch_gradient = col_matrix[row_idx, :].reshape(k_height, k_width, in_channels)
                     
-                    # Add the gradient patch to the input_gradient
+                                                                                # Add the gradient patch to the input_gradient
                     input_gradient[b, h_start:h_end, w_start:w_end, :] += patch_gradient
+        
+        return input_gradient
+
+
+class MaxPooling(Layer):
+    """
+    Max Pooling layer.
+    Reduces the spatial dimensions of the input.
+    """
+    def __init__(self, pool_size, stride=(1, 1)):
+        super().__init__()
+        self.pool_size = pool_size # (p_height, p_width)
+        self.stride = stride # (s_height, s_width)
+        self.input_shape = None
+        self.output_shape = None
+        self.max_indices = None # Store indices of max values for backward pass
+
+    def forward(self, input):
+        self.input = input
+        batch_size, in_height, in_width, in_channels = input.shape
+        p_height, p_width = self.pool_size
+        s_height, s_width = self.stride
+
+        out_height = (in_height - p_height) // s_height + 1
+        out_width = (in_width - p_width) // s_width + 1
+
+        self.output_shape = (batch_size, out_height, out_width, in_channels)
+        self.output = np.zeros(self.output_shape)
+        self.max_indices = np.zeros(self.output_shape, dtype=object) # Store indices as objects to handle tuples
+
+        for b in range(batch_size):
+            for h in range(out_height):
+                for w in range(out_width):
+                    for c in range(in_channels):
+                        h_start = h * s_height
+                        h_end = h_start + p_height
+                        w_start = w * s_width
+                        w_end = w_start + p_width
+
+                        # Extract the receptive field
+                        patch = input[b, h_start:h_end, w_start:w_end, c]
+                        
+                        # Find the maximum value and its index
+                        max_value = np.max(patch)
+                        max_idx_flat = np.argmax(patch)
+                        
+                        # Convert flattened index to 2D relative index within the patch
+                        max_h_rel = max_idx_flat // p_width
+                        max_w_rel = max_idx_flat % p_width
+
+                        self.output[b, h, w, c] = max_value
+                        self.max_indices[b, h, w, c] = (max_h_rel, max_w_rel) # Store relative (h,w) index
+
+        return self.output
+
+    def backward(self, output_gradient, learning_rate):
+        batch_size, in_height, in_width, in_channels = self.input.shape
+        p_height, p_width = self.pool_size
+        s_height, s_width = self.stride
+
+        input_gradient = np.zeros_like(self.input)
+
+        for b in range(batch_size):
+            for h in range(self.output_shape[1]):
+                for w in range(self.output_shape[2]):
+                    for c in range(in_channels):
+                        h_start = h * s_height
+                        w_start = w * s_width
+
+                        # Get the stored relative index of the max value
+                        max_h_rel, max_w_rel = self.max_indices[b, h, w, c]
+
+                        # Propagate gradient only to the max element
+                        input_gradient[b, h_start + max_h_rel, w_start + max_w_rel, c] += output_gradient[b, h, w, c]
         
         return input_gradient
