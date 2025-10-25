@@ -145,7 +145,7 @@ class DigitRecognizerGUI:
                 
                 text_color = "white" if prob > 0.5 else "black"
                 self.prob_canvas.itemconfig(self.prob_texts[i], text=f"{prob*100:.1f}%", fill=text_color)
-                self.prob_canvas.coords(self.prob_texts[i], bar_width - 5, i * (self.prob_canvas_height/10) + (self.prob_canvas_height/20), anchor='e')
+                self.prob_canvas.coords(self.prob_texts[i], bar_width - 5, i * (self.prob_canvas_height/10) + (self.prob_canvas_height/20))
 
             self.drawing_changed = False
 
