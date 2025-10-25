@@ -31,6 +31,7 @@ The following tests were performed on each layer to ensure their correctness and
 | `Sigmoid`   | Passed             | Passed                 | N/A                           | PASSED |
 | `Softmax`   | Passed             | FAILED                 | N/A                           | FAILED |
 | `Flatten`   | Passed             | Passed                 | N/A                           | PASSED |
+| `Convolutional` | Passed             | Passed                 | Passed                        | PASSED |
 
 ## Detailed Findings
 
@@ -55,8 +56,12 @@ The following tests were performed on each layer to ensure their correctness and
 *   **Forward Pass:** Correctly reshapes the multi-dimensional input into a 2D array of `(batch_size, num_features)`.
 *   **Gradient Check:** Passed. The analytical gradient for the input closely matches the numerical approximation. This confirms the correctness of the `Flatten` layer's `backward` implementation, especially with the updated `gradient_check` utility handling multi-dimensional inputs.
 
+### `Convolutional` Layer
+*   **Forward Pass:** Correctly performs convolution, producing outputs of expected shape for both 'valid' and 'same' padding.
+*   **Gradient Check:** Passed. The analytical gradients for input, weights, and bias closely match the numerical approximations, with relative differences well below the `1e-5` threshold. This confirms the correctness of the `Convolutional` layer's `backward` implementation, including the `im2col` and `col2im` transformations.
+
 ## Conclusion
 
-The `Dense`, `ReLU`, `Sigmoid`, and `Flatten` layers' implementations, including their `forward` and `backward` passes, have been successfully verified through unit tests and gradient checks. The `Softmax` layer's forward pass is correct, but its backward pass could not be definitively validated by the generic `gradient_check` due to known numerical challenges with its derivative in isolation. Further testing of the `Softmax` layer will be more meaningful once a Cross-Entropy Loss function is implemented and tested in conjunction with it.
+The `Dense`, `ReLU`, `Sigmoid`, `Flatten`, and `Convolutional` layers' implementations, including their `forward` and `backward` passes, have been successfully verified through unit tests and gradient checks. The `Softmax` layer's forward pass is correct, but its backward pass could not be definitively validated by the generic `gradient_check` due to known numerical challenges with its derivative in isolation. Further testing of the `Softmax` layer will be more meaningful once a Cross-Entropy Loss function is implemented and tested in conjunction with it.
 
 Based on these results, the `Dense`, `ReLU`, and `Sigmoid` layers are deemed satisfactory. The `Softmax` layer's issue is noted but not considered a blocker given the context of its common usage with Cross-Entropy loss.
