@@ -9,11 +9,12 @@ def main():
     # Load the preprocessed data
     (x_train, y_train), (x_test, y_test) = preprocess_mnist_data()
     
-    # The full dataset is used for training
-    # x_train = x_train[:1000]
-    # y_train = y_train[:1000]
-    # x_test = x_test[:200]
-    # y_test = y_test[:200]
+    # For faster development, let's use a subset of the data
+    # Remove these lines to train on the full dataset
+    x_train = x_train[:1000]
+    y_train = y_train[:1000]
+    x_test = x_test[:200]
+    y_test = y_test[:200]
     
     print(f"Training data shape: {x_train.shape}")
     print(f"Test data shape: {x_test.shape}")
