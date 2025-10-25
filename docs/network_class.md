@@ -2,6 +2,8 @@
 
 The `Network` class is the heart of our neural network library. It acts as a container for a sequence of layers, and provides the core logic to train the model on data and make predictions.
 
+(See [Fundamental Concepts](./Concepts.md) for an introduction to the core ideas of a neural network.)
+
 ## Core Concepts
 
 *   **Sequential Model:** This `Network` class represents a sequential model, which is a linear stack of layers. You simply `.add()` layers one after another to build the model architecture.

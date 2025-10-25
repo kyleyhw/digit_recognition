@@ -1,6 +1,8 @@
 # Loss Functions Documentation
 
-Loss functions are a crucial component of neural networks. They measure how well the model's predictions match the true target values. The output of a loss function is a single scalar value, often referred to as the "loss" or "error," which quantifies the discrepancy. During training, the goal of the optimization algorithm (like Stochastic Gradient Descent) is to adjust the network's parameters (weights and biases) to minimize this loss.
+Loss functions are a crucial component of neural networks. They measure how well the model's predictions match the true target values. The output of a loss function is a single scalar value, often referred to as the "loss" or "error," which quantifies the discrepancy. Loss functions are a crucial component of neural networks, quantifying the discrepancy between the network's predictions and the true target values. During training, the goal of the optimization algorithm is to minimize this loss.
+
+(See [Fundamental Concepts](./Concepts.md) for an introduction to Loss Functions, Training, and Optimization.)
 
 ## Base Class: `Loss`
 

@@ -2,6 +2,8 @@
 
 This document explains the `train_mnist.py` script, which serves as the main entry point for building, training, and evaluating our from-scratch Convolutional Neural Network (CNN) on the MNIST dataset.
 
+(For a detailed breakdown of each layer, see [The Layers Explained](./Layers_Explained.md). For an introduction to the core concepts, see [Fundamental Concepts](./Concepts.md).)
+
 ## The `train_mnist.py` Script
 
 *   **Purpose:** To bring together all the implemented components (layers, loss functions, network) to create and train a functional CNN for handwritten digit recognition.
