@@ -49,19 +49,21 @@ This repository contains a from-scratch implementation of:
 
 ### Prerequisites
 
-*   Python 3.x
+*   Conda (Anaconda or Miniconda)
 
 ### Installation
 
-1.  Clone the repository:
+1.  **Clone the Repository:**
     ```bash
     git clone https://github.com/kyleyhw/digit_recognition.git
     cd digit_recognition
     ```
 
-2.  Install the required libraries using `requirements.txt`:
+2.  **Create and Activate the Conda Environment:**
+    This command creates a new Conda environment named `digit_recognition` with all the necessary libraries specified in the `environment.yml` file.
     ```bash
-    pip install -r requirements.txt
+    conda env create -f environment.yml
+    conda activate digit_recognition
     ```
 
 ### 1. Prepare the Data

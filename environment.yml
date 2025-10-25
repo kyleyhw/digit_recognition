@@ -1,0 +1,9 @@
+name: digit_recognition
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.10
+  - numpy
+  - requests
+  - pillow
