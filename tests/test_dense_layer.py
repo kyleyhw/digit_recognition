@@ -46,25 +46,28 @@ def gradient_check(layer, input_data_original, epsilon=1e-4):
     numerical_input_gradient = np.zeros_like(input_data_original)
     input_data_perturbed = input_data_original.copy()
 
-    for i in range(input_data_original.shape[0]):
-        for j in range(input_data_original.shape[1]):
-            original_value = input_data_original[i, j]
+    # Iterate over all elements of the input_data_original
+    it = np.nditer(input_data_original, flags=['multi_index'], op_flags=['readwrite'])
+    while not it.finished:
+        idx = it.multi_index
+        original_value = input_data_original[idx]
 
-            # Perturb +epsilon
-            input_data_perturbed[i, j] = original_value + epsilon
-            output_plus = layer.forward(input_data_perturbed)
-            loss_plus = np.sum(output_plus**2)
+        # Perturb +epsilon
+        input_data_perturbed[idx] = original_value + epsilon
+        output_plus = layer.forward(input_data_perturbed)
+        loss_plus = np.sum(output_plus**2)
 
-            # Perturb -epsilon
-            input_data_perturbed[i, j] = original_value - epsilon
-            output_minus = layer.forward(input_data_perturbed)
-            loss_minus = np.sum(output_minus**2)
+        # Perturb -epsilon
+        input_data_perturbed[idx] = original_value - epsilon
+        output_minus = layer.forward(input_data_perturbed)
+        loss_minus = np.sum(output_minus**2)
 
-            # Restore original value
-            input_data_perturbed[i, j] = original_value
+        # Restore original value
+        input_data_perturbed[idx] = original_value
 
-            numerical_gradient = (loss_plus - loss_minus) / (2 * epsilon)
-            numerical_input_gradient[i, j] = numerical_gradient
+        numerical_gradient = (loss_plus - loss_minus) / (2 * epsilon)
+        numerical_input_gradient[idx] = numerical_gradient
+        it.iternext()
 
     # Compare input gradients
     relative_diff_input = np.max(np.abs(analytical_input_gradient - numerical_input_gradient) /
@@ -79,25 +82,27 @@ def gradient_check(layer, input_data_original, epsilon=1e-4):
     if hasattr(layer, 'weights') and analytical_weights_gradient is not None:
         numerical_weights_gradient = np.zeros_like(initial_weights)
         
-        for i in range(initial_weights.shape[0]):
-            for j in range(initial_weights.shape[1]):
-                original_value = initial_weights[i, j]
+        it = np.nditer(initial_weights, flags=['multi_index'], op_flags=['readwrite'])
+        while not it.finished:
+            idx = it.multi_index
+            original_value = initial_weights[idx]
 
-                # Perturb +epsilon
-                layer.weights[i, j] = original_value + epsilon
-                output_plus = layer.forward(input_data_original) # Use original input for forward pass
-                loss_plus = np.sum(output_plus**2)
+            # Perturb +epsilon
+            layer.weights[idx] = original_value + epsilon
+            output_plus = layer.forward(input_data_original) # Use original input for forward pass
+            loss_plus = np.sum(output_plus**2)
 
-                # Perturb -epsilon
-                layer.weights[i, j] = original_value - epsilon
-                output_minus = layer.forward(input_data_original)
-                loss_minus = np.sum(output_minus**2)
+            # Perturb -epsilon
+            layer.weights[idx] = original_value - epsilon
+            output_minus = layer.forward(input_data_original)
+            loss_minus = np.sum(output_minus**2)
 
-                # Restore original value
-                layer.weights[i, j] = original_value
+            # Restore original value
+            layer.weights[idx] = original_value
 
-                numerical_gradient = (loss_plus - loss_minus) / (2 * epsilon)
-                numerical_weights_gradient[i, j] = numerical_gradient
+            numerical_gradient = (loss_plus - loss_minus) / (2 * epsilon)
+            numerical_weights_gradient[idx] = numerical_gradient
+            it.iternext()
 
         relative_diff_weights = np.max(np.abs(analytical_weights_gradient - numerical_weights_gradient) /
                                        (np.abs(analytical_weights_gradient) + np.abs(numerical_weights_gradient) + 1e-8))
@@ -112,24 +117,27 @@ def gradient_check(layer, input_data_original, epsilon=1e-4):
     if hasattr(layer, 'bias') and analytical_bias_gradient is not None:
         numerical_bias_gradient = np.zeros_like(initial_bias)
 
-        for j in range(initial_bias.shape[0]):
-            original_value = initial_bias[j]
+        it = np.nditer(initial_bias, flags=['multi_index'], op_flags=['readwrite'])
+        while not it.finished:
+            idx = it.multi_index
+            original_value = initial_bias[idx]
 
             # Perturb +epsilon
-            layer.bias[j] = original_value + epsilon
+            layer.bias[idx] = original_value + epsilon
             output_plus = layer.forward(input_data_original)
             loss_plus = np.sum(output_plus**2)
 
             # Perturb -epsilon
-            layer.bias[j] = original_value - epsilon
+            layer.bias[idx] = original_value - epsilon
             output_minus = layer.forward(input_data_original)
             loss_minus = np.sum(output_minus**2)
 
             # Restore original value
-            layer.bias[j] = original_value
+            layer.bias[idx] = original_value
 
             numerical_gradient = (loss_plus - loss_minus) / (2 * epsilon)
-            numerical_bias_gradient[j] = numerical_gradient
+            numerical_bias_gradient[idx] = numerical_gradient
+            it.iternext()
 
         relative_diff_bias = np.max(np.abs(analytical_bias_gradient - numerical_bias_gradient) /
                                     (np.abs(analytical_bias_gradient) + np.abs(numerical_bias_gradient) + 1e-8))
