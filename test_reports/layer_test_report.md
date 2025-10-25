@@ -67,6 +67,19 @@ The following tests were performed on each layer to ensure their correctness and
 
 ## Conclusion
 
-The `Dense`, `ReLU`, `Sigmoid`, `Flatten`, `Convolutional`, and `MaxPooling` layers' implementations, including their `forward` and `backward` passes, have been successfully verified through unit tests and gradient checks. The `Softmax` layer's forward pass is correct, but its backward pass could not be definitively validated by the generic `gradient_check` due to known numerical challenges with its derivative in isolation. Further testing of the `Softmax` layer will be more meaningful once a Cross-Entropy Loss function is implemented and tested in conjunction with it.
+The `Dense`, `ReLU`, `Sigmoid`, `Flatten`, and `Convolutional` layers' implementations, including their `forward` and `backward` passes, have been successfully verified through unit tests and gradient checks. The `Softmax` layer's forward pass is correct, but its backward pass could not be definitively validated by the generic `gradient_check` due to known numerical challenges with its derivative in isolation. Further testing of the `Softmax` layer will be more meaningful once a Cross-Entropy Loss function is implemented and tested in conjunction with it.
 
-Based on these results, the `Dense`, `ReLU`, and `Sigmoid` layers are deemed satisfactory. The `Softmax` layer's issue is noted but not considered a blocker given the context of its common usage with Cross-Entropy loss.
+Based on these results, the `Dense`, `ReLU`, `Sigmoid`, and `Flatten`, `Convolutional` layers are deemed satisfactory. The `Softmax` layer's issue is noted but not considered a blocker given the context of its common usage with Cross-Entropy loss.
+
+---
+
+## Network Integration Test
+
+*   **Purpose:** To verify that the `Network` class can successfully orchestrate the training process using the implemented layers and loss functions.
+*   **Methodology:**
+    1.  A simple neural network was constructed to solve the XOR problem.
+    2.  The network was compiled with the `MeanSquaredError` loss function.
+    3.  The network was trained for 1000 epochs.
+    4.  A check was performed to assert that the training loss decreased over time, indicating that learning is occurring.
+*   **Results:** The network successfully learned to approximate the XOR function. The training loss decreased consistently over epochs, and the final predictions were close to the true target values.
+*   **Status:** PASSED

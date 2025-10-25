@@ -1,0 +1,82 @@
+import numpy as np
+# Assuming layers.py is in the same directory, we'll import necessary classes
+from layers import Layer # We'll need this for type hinting or just general understanding
+from losses import Loss # Assuming losses.py is in the same directory
+
+class Network:
+    """
+    A sequential neural network model.
+    This class will orchestrate the forward and backward passes through its layers.
+    """
+    def __init__(self):
+        self.layers = []
+        self.loss_function = None # To be set by the user
+
+    def add(self, layer):
+        """
+        Adds a layer to the network.
+        """
+        self.layers.append(layer)
+
+    def compile(self, loss_function):
+        """
+        Configures the model for training.
+        """
+        self.loss_function = loss_function
+
+    def forward(self, input_data):
+        """
+        Performs the forward pass through all layers in the network.
+        """
+        output = input_data
+        for layer in self.layers:
+            output = layer.forward(output)
+        return output
+
+    def backward(self, output_gradient, learning_rate):
+        """
+        Performs the backward pass through all layers in reverse order.
+        """
+        gradient = output_gradient
+        for layer in reversed(self.layers):
+            gradient = layer.backward(gradient, learning_rate)
+
+    def train(self, X_train, y_train, epochs, learning_rate, batch_size=32):
+        """
+        Orchestrates the training loop.
+        """
+        if self.loss_function is None:
+            raise ValueError("Loss function not compiled. Call network.compile(loss_function) first.")
+
+        num_samples = X_train.shape[0]
+
+        for epoch in range(epochs):
+            total_loss = 0
+            # Shuffle data for each epoch
+            permutation = np.random.permutation(num_samples)
+            X_shuffled = X_train[permutation]
+            y_shuffled = y_train[permutation]
+
+            for i in range(0, num_samples, batch_size):
+                X_batch = X_shuffled[i:i + batch_size]
+                y_batch = y_shuffled[i:i + batch_size]
+
+                # Forward pass
+                output = self.forward(X_batch)
+
+                # Calculate loss
+                loss = self.loss_function.loss(y_batch, output)
+                total_loss += loss
+
+                # Backward pass
+                output_gradient = self.loss_function.prime(y_batch, output)
+                self.backward(output_gradient, learning_rate)
+            
+            avg_loss = total_loss / (num_samples / batch_size)
+            print(f"Epoch {epoch+1}/{epochs}, Loss: {avg_loss:.4f}")
+
+    def predict(self, input_data):
+        """
+        Makes predictions using the trained network.
+        """
+        return self.forward(input_data)

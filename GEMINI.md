@@ -7,5 +7,5 @@
 - Please be precise, technically detailed, and avoid conversational fluff.
 - Do not make assumptions; instead ask for clarification if needed.
 - Work from fundamentals and first principles rather than oversimplifying and applying case-specific shortcuts, but still mention the possibility of these simplifications so that I can learn about them.
-- When committing to git, write appropriate commit messages for each file specifically rather than using the same message for all files.
-- For tests, include runtime in the reports. Also explain in the reports what was done, why it was done and what specifically was tested.
+- For tests, include runtime in the reports. Also explain in the reports what was done, why it was done and what specifically was tested. Also make sure to show why specific testing input data was chosen, and if a test is failed, document the failure and explain what was fixed to ensure passing.
+- Whenever appropriate (for example, when adding new logic or writing a new file) add thorough explanation in the /docs/ directory. 
