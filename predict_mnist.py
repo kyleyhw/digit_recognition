@@ -40,6 +40,9 @@ def main():
     # --- Evaluate the Network ---
     print("\n--- Evaluating the Loaded Network ---")
     total_correct = 0
+    num_to_print = 20
+    print_interval = len(x_test) // num_to_print
+
     for i in range(len(x_test)):
         x_sample = x_test[i].reshape(1, 28, 28, 1)
         y_sample_true = y_test[i]
@@ -51,7 +54,7 @@ def main():
         if predicted_class == true_class:
             total_correct += 1
             
-        if i < 10 or i > len(x_test) - 10:
+        if i % print_interval == 0:
             print(f"Sample {i+1}: Predicted: {predicted_class}, True: {true_class}")
 
     accuracy = (total_correct / len(x_test)) * 100
