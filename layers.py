@@ -131,4 +131,24 @@ class Softmax(Layer):
         # dL/d(input)_j = sum_i (dL/d(output)_i * d(output)_i / d(input)_j)
         # This simplifies to:
         s = self.output
-        return s * output_gradient - s * np.sum(s * output_gradient, axis=-1, keepdims=True) 
+        return s * output_gradient - s * np.sum(s * output_gradient, axis=-1, keepdims=True)
+
+
+class Flatten(Layer):
+    """
+    Flattens the input into a 2D array (batch_size, num_features).
+    """
+    def __init__(self):
+        super().__init__()
+        self.input_shape = None
+
+    def forward(self, input):
+        self.input_shape = input.shape
+        batch_size = input.shape[0]
+        # Flatten all dimensions except the batch dimension
+        self.output = input.reshape(batch_size, -1)
+        return self.output
+
+    def backward(self, output_gradient, learning_rate):
+        # Reshape the output_gradient back to the original input shape
+        return output_gradient.reshape(self.input_shape)
