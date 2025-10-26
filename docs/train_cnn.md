@@ -186,6 +186,46 @@ Parameter initialization refers to the process of setting the initial values of 
     *   **Preventing Vanishing/Exploding Gradients (Weights):** Initializing weights with appropriate scaling helps to prevent the gradients from becoming extremely small (vanishing) or extremely large (exploding) as they propagate backward through the network. While a simple random normal distribution is used here for simplicity, more sophisticated methods like Xavier/Glorot or He initialization (which scale random initializations based on the number of input/output neurons) are often used in practice to maintain healthy gradient flow, especially in deep networks.
     *   **Zero Biases:** Initializing biases to zero is a common practice and generally doesn't suffer from the symmetry problem that zero weights would. Biases serve to shift the activation function, and starting from zero allows the weights to primarily drive the initial learning process.
 
+### General Guidelines for Choosing Hyperparameters
+
+Selecting optimal hyperparameters like the number of epochs, batch size, and learning rate is often more an art than a science, involving a mix of theoretical understanding, empirical experimentation, and domain knowledge. Here are some general guidelines:
+
+#### Choosing the Number of Epochs
+
+*   **Definition:** One epoch is a complete pass through the entire training dataset. The model completes one full update cycle (forward pass, loss calculation, backward pass, parameter update) for every training example.
+*   **Too Few Epochs (Underfitting):** If you train for too few epochs, the model will not have had enough time to learn the underlying patterns in the data effectively. It will perform poorly on both the training and test sets.
+*   **Too Many Epochs (Overfitting):** Training for too many epochs can lead to overfitting, where the model learns the training data too well, memorizing noise and specific examples rather than general patterns. This results in good performance on the training set but poor generalization to new, unseen data.
+*   **Monitoring and Early Stopping:** The most effective way to choose the number of epochs is to monitor the model's performance on a separate **validation set** during training. You typically stop training when the performance on the validation set starts to degrade or plateau, even if the training loss continues to decrease. This technique is called **early stopping**.
+*   **Consider Data Size and Complexity:** Larger datasets or more complex models generally require more epochs to converge. Simpler models or smaller datasets might overfit quickly.
+
+#### Choosing the Batch Size
+
+*   **Definition:** The batch size is the number of training examples utilized in one iteration. The model's parameters are updated after processing each batch.
+*   **Small Batch Size (e.g., 1-32):**
+    *   **Pros:** Leads to a noisy but potentially better estimate of the gradient, which can help escape shallow local minima. Requires less memory. Acts as a regularizer, preventing overfitting. Good for online learning or very large datasets.
+    *   **Cons:** Training can be slower (more weight updates per epoch). Gradient estimates are noisy, leading to more oscillations in validation loss.
+*   **Large Batch Size (e.g., 64-256+):**
+    *   **Pros:** Provides a more stable and accurate estimate of the gradient. Leads to faster training computation per epoch (more efficient use of hardware). Smoother convergence. Less susceptible to noisy gradients.
+    *   **Cons:** Can get stuck in sharp local minima. Requires more memory. Can sometimes lead to poorer generalization by converging to flatter minima that are further from the true optimum. More prone to overfitting if not regularized appropriately.
+*   **Common Practice:** Batch sizes that are powers of 2 (e.g., 16, 32, 64, 128) are often empirically found to be computationally efficient due to how hardware (especially GPUs) processes data.
+
+#### Choosing the Learning Rate
+
+*   **Definition:** The learning rate ($\eta$) is arguably the most important hyperparameter. It scales the magnitude of the weight updates during gradient descent. Effectively, it controls how aggressively the model learns.
+*   **Too High Learning Rate:**
+    *   **Effect:** The model's parameters might overshoot the optimal point (the minimum of the loss function) or even diverge, causing the loss to increase or oscillate wildly.
+    *   **Symptoms:** Rapidly increasing or `NaN` loss values.
+*   **Too Low Learning Rate:**
+    *   **Effect:** Training becomes very slow, and the model might get stuck in a suboptimal local minimum. It might take an extremely long time to converge.
+    *   **Symptoms:** Loss decreases very slowly, or plateaus at a high value.
+*   **Finding a Good Learning Rate:**
+    *   **Learning Rate Finder:** Techniques like Leslie Smith's learning rate finder can be used to empirically find a good range for the learning rate by briefly training the model with exponentially increasing learning rates.
+    *   **Log-Scale Search:** Systematically trying values on a log scale (e.g., 0.1, 0.01, 0.001) is a common starting point.
+    *   **Learning Rate Schedules:** Changing the learning rate during training (e.g., reducing it after a certain number of epochs, or when validation loss plateaus) can improve convergence and final performance.
+    *   **Adaptive Optimizers:** Optimizers like Adam, RMSprop, or Adagrad automatically adjust the learning rate for each parameter during training, reducing the need for manual tuning of a global learning rate.
+
+Effectively tuning these hyperparameters is crucial for training stable, efficient, and well-performing neural networks.
+
 ## Checkpointing (Pausing and Resuming Training)
 
 For long training runs, it's crucial to be able to save the model's progress and resume training later. Our `Network` class supports this through checkpointing:
