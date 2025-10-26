@@ -1,4 +1,5 @@
 import numpy as np
+from tqdm import tqdm # Import tqdm
 # Assuming layers.py is in the same directory, we'll import necessary classes
 from .layers import Layer # We'll need this for type hinting or just general understanding
 from .losses import Loss # Assuming losses.py is in the same directory
@@ -57,23 +58,28 @@ class Network:
             X_shuffled = X_train[permutation]
             y_shuffled = y_train[permutation]
 
-            for i in range(0, num_samples, batch_size):
-                X_batch = X_shuffled[i:i + batch_size]
-                y_batch = y_shuffled[i:i + batch_size]
+            # Use tqdm for a progress bar with ETA
+            with tqdm(range(0, num_samples, batch_size), unit="batch", desc=f"Epoch {epoch+1}/{epochs}") as pbar:
+                for i in pbar:
+                    X_batch = X_shuffled[i:i + batch_size]
+                    y_batch = y_shuffled[i:i + batch_size]
 
-                # Forward pass
-                output = self.forward(X_batch)
+                    # Forward pass
+                    output = self.forward(X_batch)
 
-                # Calculate loss
-                loss = self.loss_function.loss(y_batch, output)
-                total_loss += loss
+                    # Calculate loss
+                    loss = self.loss_function.loss(y_batch, output)
+                    total_loss += loss
 
-                # Backward pass
-                output_gradient = self.loss_function.prime(y_batch, output)
-                self.backward(output_gradient, learning_rate)
+                    # Backward pass
+                    output_gradient = self.loss_function.prime(y_batch, output)
+                    self.backward(output_gradient, learning_rate)
+                    
+                    # Update progress bar description with current loss
+                    pbar.set_postfix(loss=f"{loss:.4f}")
             
             avg_loss = total_loss / (num_samples / batch_size)
-            print(f"Epoch {epoch+1}/{epochs}, Loss: {avg_loss:.4f}")
+            print(f"Epoch {epoch+1}/{epochs}, Average Loss: {avg_loss:.4f}")
 
     def predict(self, input_data):
         """

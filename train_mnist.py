@@ -11,10 +11,10 @@ def main():
     
     # For faster development, let's use a subset of the data
     # Remove these lines to train on the full dataset
-    x_train = x_train[:1000]
-    y_train = y_train[:1000]
-    x_test = x_test[:200]
-    y_test = y_test[:200]
+    x_train = x_train
+    y_train = y_train
+    x_test = x_test
+    y_test = y_test
     
     print(f"Training data shape: {x_train.shape}")
     print(f"Test data shape: {x_test.shape}")
@@ -61,11 +61,14 @@ def main():
 
     # --- Save the Trained Model ---
     print("\n--- Saving the Trained Model ---")
-    net.save_model("models/mnist_cnn_subset_1000.npz")
+    net.save_model("models/mnist_cnn_full_set.npz")
 
     # --- Evaluate the Network ---
     print("\n--- Evaluating the Network ---")
     total_correct = 0
+    num_to_print = 20 # Number of evenly spaced samples to print
+    print_interval = len(x_test) // num_to_print
+
     for i in range(len(x_test)):
         x_sample = x_test[i].reshape(1, 28, 28, 1)
         y_sample_true = y_test[i]
@@ -80,8 +83,8 @@ def main():
         if predicted_class == true_class:
             total_correct += 1
             
-        # Print progress for a few samples
-        if i < 10 or i > len(x_test) - 10:
+        # Print evenly spaced samples
+        if i % print_interval == 0:
             print(f"Sample {i+1}: Predicted: {predicted_class}, True: {true_class}")
 
     accuracy = (total_correct / len(x_test)) * 100

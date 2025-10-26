@@ -7,3 +7,4 @@ dependencies:
   - numpy
   - requests
   - pillow
+  - tqdm
