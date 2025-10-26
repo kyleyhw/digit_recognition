@@ -51,6 +51,88 @@ The architecture is inspired by the classic LeNet-5 model, which is highly effec
     *   `Softmax()`: Converts the 10 raw output values into a probability distribution, where each value represents the predicted probability for a digit from 0 to 9.
     *   *Output Shape:* `(10,)`
 
+## CNN Architecture (LeNet-5 Style)
+
+The architecture is inspired by the classic LeNet-5 model, which is highly effective for digit recognition.
+
+1.  **Input:** `(28, 28, 1)` - Grayscale images of handwritten digits.
+
+2.  **Layer 1: Convolutional -> ReLU -> MaxPooling**
+    *   `Convolutional(input_shape=(28, 28, 1), num_filters=6, kernel_size=(5, 5), padding='same')`: Applies 6 different 5x5 filters to the input image. `'same'` padding is used to ensure the output feature maps have the same spatial dimensions (28x28) as the input.
+    *   `ReLU()`: Introduces non-linearity.
+    *   `MaxPooling(pool_size=(2, 2), stride=(2, 2))`: Downsamples the 28x28 feature maps to 14x14, reducing dimensionality and providing translational invariance.
+    *   *Output Shape:* `(14, 14, 6)`
+
+3.  **Layer 2: Convolutional -> ReLU -> MaxPooling**
+    *   `Convolutional(input_shape=(14, 14, 6), num_filters=16, kernel_size=(5, 5), padding='valid')`: Applies 16 different 5x5 filters to the feature maps from the previous layer. `'valid'` padding means no padding is applied.
+    *   `ReLU()`: Introduces non-linearity.
+    *   `MaxPooling(pool_size=(2, 2), stride=(2, 2))`: Downsamples the 10x10 feature maps to 5x5.
+    *   *Output Shape:* `(5, 5, 16)`
+
+4.  **Layer 3: Flatten**
+    *   `Flatten()`: Converts the 3D feature maps `(5, 5, 16)` into a 1D vector.
+    *   *Output Shape:* `(400,)` (since 5 * 5 * 16 = 400)
+
+5.  **Layer 4: Dense -> ReLU**
+    *   `Dense(400, 120)`: A fully connected layer that maps the 400 features to 120 features.
+    *   `ReLU()`: Introduces non-linearity.
+    *   *Output Shape:* `(120,)`
+
+6.  **Layer 5: Dense -> ReLU**
+    *   `Dense(120, 84)`: Another fully connected layer, reducing the features from 120 to 84.
+    *   `ReLU()`: Introduces non-linearity.
+    *   *Output Shape:* `(84,)`
+
+7.  **Layer 6: Output Layer (Dense -> Softmax)**
+    *   `Dense(84, 10)`: The final fully connected layer, which produces 10 output values (one for each digit class).
+    *   `Softmax()`: Converts the 10 raw output values into a probability distribution, where each value represents the predicted probability for a digit from 0 to 9.
+    *   *Output Shape:* `(10,)`
+
+### Design Rationale for LeNet-5 Architecture
+
+The LeNet-5 inspired architecture used in this project is particularly well-suited for digit recognition tasks like MNIST due to several key design principles:
+
+*   **Spatial Feature Extraction:** The initial convolutional layers are designed to learn local features such as edges, corners, and textures. By stacking these layers, the network progressively learns more complex and abstract representations of the input image.
+*   **Dimensionality Reduction and Translation Invariance:** MaxPooling layers reduce the spatial dimensions of the feature maps, which helps in making the model more robust to small shifts or distortions in the input image. This downsampling also reduces the computational cost in subsequent layers.
+*   **Feature Learning to Classification Transition:** The Flatten layer converts the 3D feature maps into a 1D vector, preparing the data for the fully connected (Dense) layers. These Dense layers then act as a classifier, mapping the learned features to the final digit predictions.
+*   **Non-linearity for Complex Patterns:** ReLU activation functions introduce non-linearity into the network, allowing it to learn complex, non-linear boundaries in the feature space that are necessary for distinguishing between different handwritten digits.
+*   **Probabilistic Output:** The final Dense layer followed by a Softmax activation produces a probability distribution over the 10 possible digit classes, making the output easily interpretable.
+
+#### Alternatives to Considered Architectures
+
+While the LeNet-5 style is effective, several other architectures exist, each with its own advantages and disadvantages:
+
+1.  **Purely Fully Connected Networks (FCNs):**
+    *   **Description:** Each pixel would be an input to the first layer, and layers would consist solely of Dense layers.
+    *   **Pros:** Conceptually simpler for basic non-image tasks.
+    *   **Cons:**
+        *   **Loss of Spatial Information:** FCNs treat pixels as independent features, losing critical spatial relationships (e.g., a handwritten '7' has a distinct pattern of connected pixels).
+        *   **Massive Parameter Count:** For image data, an FCN requires a weight for every connection from every input pixel to every neuron in the first hidden layer. For a 28x28 image, this leads to an explosion of parameters, making the network computationally expensive, harder to train, and highly prone to overfitting.
+        *   **No Translational Invariance:** Changes in an object's position require the network to learn new features for each position.
+
+2.  **Deeper and More Complex CNN Architectures (e.g., VGG, ResNet, Inception):**
+    *   **Description:** These are state-of-the-art CNNs with many more layers, often incorporating advanced concepts like residual connections (ResNet) or multi-scale processing (Inception).
+    *   **Pros:** Achieve significantly higher accuracy on complex datasets (e.g., ImageNet) by learning richer, more abstract features. They can capture intricate patterns and generalize better on diverse real-world images.
+    *   **Cons:**
+        *   **Computational Expense:** Require immense computational resources (GPUs, TPUs) and long training times.
+        *   **Data Hunger:** Need vast amounts of labeled data for effective training from scratch.
+        *   **Increased Complexity:** More challenging to implement from scratch and understand the precise role of each component.
+        *   **Overkill for Simple Tasks:** For a simple task like MNIST, their complexity is often unnecessary.
+
+### Adapting CNNs to Other Applications
+
+The foundational principles of CNNs (hierarchical feature learning, parameter sharing, local receptive fields) make them highly versatile for various computer vision tasks:
+
+1.  **Image Classification:** (As in this project) Assigning a label to an entire image (e.g., identifying animals, scenes, objects). By adjusting the output layer to match the number of classes and training on relevant datasets, a CNN can categorize any type of image.
+
+2.  **Object Detection:** Identifying and locating specific objects within an image, typically by drawing bounding boxes around them and assigning a class label to each box. This involves extensions to CNNs that predict both bounding box coordinates and class probabilities (e.g., R-CNN, YOLO, SSD). The convolutional backbone is often used as a feature extractor.
+
+3.  **Image Segmentation:** Performing pixel-level classification, where each pixel in an image is assigned a class label (e.g., "road," "car," "pedestrian," "background"). Architectures like U-Net or Fully Convolutional Networks (FCNs) are commonly used, building upon CNN features to reconstruct a dense classification map. Useful in medical imaging (tumor segmentation) and autonomous driving.
+
+4.  **Generative Models:** Creating new images that are indistinguishable from real images, or generating images based on certain conditions (e.g., text descriptions). Generative Adversarial Networks (GANs) and Variational Autoencoders (VAEs) utilize CNN components to synthesize realistic imagery.
+
+5.  **Transfer Learning:** Reusing a pre-trained CNN (trained on a very large, general dataset like ImageNet) as a starting point for a new, often more specific, vision task. The early layers, which learn generic features (edges, textures), can be kept frozen, and only the later layers (or new layers added on top) are fine-tuned on the new, smaller dataset. This significantly reduces the amount of data and computation needed for training.
+
 ## How to Run
 
 To run the entire training and evaluation process, execute the following command from your project's root directory:
