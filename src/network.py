@@ -1,7 +1,7 @@
 import numpy as np
 # Assuming layers.py is in the same directory, we'll import necessary classes
-from layers import Layer # We'll need this for type hinting or just general understanding
-from losses import Loss # Assuming losses.py is in the same directory
+from .layers import Layer # We'll need this for type hinting or just general understanding
+from .losses import Loss # Assuming losses.py is in the same directory
 
 class Network:
     """
