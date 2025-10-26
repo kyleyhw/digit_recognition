@@ -43,7 +43,7 @@ class Network:
         for layer in reversed(self.layers):
             gradient = layer.backward(gradient, learning_rate)
 
-    def train(self, X_train, y_train, epochs, learning_rate, batch_size=32, checkpoint_dir=None, resume_from_checkpoint=False):
+    def train(self, X_train, y_train, epochs, learning_rate, batch_size=32, checkpoint_dir=None, checkpoint_prefix="model", resume_from_checkpoint=False):
         """
         Orchestrates the training loop.
         Returns a list of average losses for each epoch.
@@ -56,11 +56,12 @@ class Network:
         start_epoch = 0
 
         if resume_from_checkpoint and checkpoint_dir:
-            latest_checkpoint = self._find_latest_checkpoint(checkpoint_dir)
-            if latest_checkpoint:
-                print(f"Resuming training from checkpoint: {latest_checkpoint}")
-                self.load_model(latest_checkpoint)
-                start_epoch = int(latest_checkpoint.split('epoch_')[1].split('.')[0])
+            latest_checkpoint_path = self._find_latest_checkpoint(checkpoint_dir, checkpoint_prefix)
+            if latest_checkpoint_path:
+                print(f"Resuming training from checkpoint: {latest_checkpoint_path}")
+                self.load_model(latest_checkpoint_path)
+                # Extract epoch number from filename, e.g., 'model_prefix_epoch_5.npz'
+                start_epoch = int(latest_checkpoint_path.split(f'{checkpoint_prefix}_epoch_')[1].split('.')[0])
                 # Optionally, load previous epoch_losses if saved with checkpoint
                 # For simplicity, we'll start collecting losses from resume point
             else:
@@ -100,20 +101,20 @@ class Network:
             # Save checkpoint after each epoch
             if checkpoint_dir:
                 os.makedirs(checkpoint_dir, exist_ok=True)
-                checkpoint_path = os.path.join(checkpoint_dir, f"model_epoch_{epoch+1}.npz")
+                checkpoint_path = os.path.join(checkpoint_dir, f"{checkpoint_prefix}_epoch_{epoch+1}.npz")
                 self.save_model(checkpoint_path)
         
         return epoch_losses # Return the collected losses
 
-    def _find_latest_checkpoint(self, checkpoint_dir):
+    def _find_latest_checkpoint(self, checkpoint_dir, checkpoint_prefix="model"):
         if not os.path.exists(checkpoint_dir):
             return None
-        checkpoints = [f for f in os.listdir(checkpoint_dir) if f.startswith('model_epoch_') and f.endswith('.npz')]
+        checkpoints = [f for f in os.listdir(checkpoint_dir) if f.startswith(f'{checkpoint_prefix}_epoch_') and f.endswith('.npz')]
         if not checkpoints:
             return None
         
         # Sort by epoch number to find the latest
-        checkpoints.sort(key=lambda x: int(x.split('epoch_')[1].split('.')[0]))
+        checkpoints.sort(key=lambda x: int(x.split(f'{checkpoint_prefix}_epoch_')[1].split('.')[0]))
         return os.path.join(checkpoint_dir, checkpoints[-1])
 
     def predict(self, input_data):

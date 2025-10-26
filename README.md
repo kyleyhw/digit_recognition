@@ -129,11 +129,17 @@ Below are a few random samples from the MNIST training dataset, showcasing the h
 
 ![Sample MNIST Data](./docs/images/sample_data.png)
 
-### Training Progress: Loss Plot
+### Training Progress: Loss Plots
 
-This plot illustrates the training loss over epochs. A decreasing trend indicates that the network is learning and its predictions are becoming more accurate over time.
+We provide two loss plots to illustrate the training progress:
 
-![Training Loss Plot](./docs/images/training_loss.png)
+1.  **Subset Training Loss:** This plot shows the loss curve when the model is trained on a small subset of the MNIST data. It's useful for quick experimentation and verifying the training setup.
+
+    ![Subset Training Loss Plot](./docs/images/training_loss_subset.png)
+
+2.  **Full Training Loss:** This plot shows the loss curve when the model is trained on the full MNIST dataset. A decreasing trend indicates that the network is learning and its predictions are becoming more accurate over time.
+
+    ![Full Training Loss Plot](./docs/images/training_loss_full.png)
 
 ### Prediction Examples
 
