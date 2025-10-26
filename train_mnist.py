@@ -12,15 +12,18 @@ def main():
     # Load the preprocessed data
     (x_train, y_train), (x_test, y_test) = preprocess_mnist_data()
     
-    # For faster development, let's use a subset of the data
-    # Remove these lines to train on the full dataset
-    x_train = x_train[:1000]
-    y_train = y_train[:1000]
-    x_test = x_test[:200]
-    y_test = y_test[:200]
+    # Use the full training dataset
+    # x_train = x_train[:1000]
+    # y_train = y_train[:1000]
+
+    # Use a random subset of the test data for evaluation
+    num_test_samples_to_evaluate = 200 # Evaluate on 200 random samples
+    test_permutation = np.random.permutation(len(x_test))
+    x_test = x_test[test_permutation][:num_test_samples_to_evaluate]
+    y_test = y_test[test_permutation][:num_test_samples_to_evaluate]
     
     print(f"Training data shape: {x_train.shape}")
-    print(f"Test data shape: {x_test.shape}")
+    print(f"Test data shape (random subset): {x_test.shape}")
 
     # --- Define the CNN Architecture ---
     print("\n--- Building the CNN Model ---")
@@ -60,7 +63,9 @@ def main():
 
     # --- Train the Network ---
     print("\n--- Training the Network ---")
-    epoch_losses = net.train(x_train, y_train, epochs=10, learning_rate=0.01, batch_size=32)
+    checkpoint_dir = "models/checkpoints"
+    os.makedirs(checkpoint_dir, exist_ok=True)
+    epoch_losses = net.train(x_train, y_train, epochs=10, learning_rate=0.01, batch_size=32, checkpoint_dir=checkpoint_dir, resume_from_checkpoint=True)
 
     # --- Plotting Loss ---
     print("\n--- Plotting Loss --- ")
@@ -81,7 +86,7 @@ def main():
 
     # --- Save the Trained Model ---
     print("\n--- Saving the Trained Model ---")
-    net.save_model("models/mnist_cnn_subset_1000.npz")
+    net.save_model("models/mnist_cnn_full_dataset.npz")
 
     # --- Evaluate the Network ---
     print("\n--- Evaluating the Network ---")

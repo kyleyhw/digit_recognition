@@ -30,10 +30,10 @@ def main():
 
     # --- Load the Trained Model ---
     try:
-        print("\n--- Loading the Trained Model from 'mnist_cnn.npz' ---")
-        net.load_model("models/mnist_cnn_subset_1000.npz")
+        print("\n--- Loading the Trained Model from 'models/mnist_cnn_full_dataset.npz' ---")
+        net.load_model("models/mnist_cnn_full_dataset.npz")
     except FileNotFoundError:
-        print("\nERROR: Model file 'mnist_cnn.npz' not found.")
+        print("\nERROR: Model file 'models/mnist_cnn_full_dataset.npz' not found.")
         print("Please run 'python train_mnist.py' first to train and save the model.")
         return
 

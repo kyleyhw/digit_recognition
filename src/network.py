@@ -42,7 +42,7 @@ class Network:
         for layer in reversed(self.layers):
             gradient = layer.backward(gradient, learning_rate)
 
-    def train(self, X_train, y_train, epochs, learning_rate, batch_size=32):
+    def train(self, X_train, y_train, epochs, learning_rate, batch_size=32, checkpoint_dir=None, resume_from_checkpoint=False):
         """
         Orchestrates the training loop.
         Returns a list of average losses for each epoch.
@@ -52,8 +52,20 @@ class Network:
 
         num_samples = X_train.shape[0]
         epoch_losses = [] # List to store average loss per epoch
+        start_epoch = 0
 
-        for epoch in range(epochs):
+        if resume_from_checkpoint and checkpoint_dir:
+            latest_checkpoint = self._find_latest_checkpoint(checkpoint_dir)
+            if latest_checkpoint:
+                print(f"Resuming training from checkpoint: {latest_checkpoint}")
+                self.load_model(latest_checkpoint)
+                start_epoch = int(latest_checkpoint.split('epoch_')[1].split('.')[0])
+                # Optionally, load previous epoch_losses if saved with checkpoint
+                # For simplicity, we'll start collecting losses from resume point
+            else:
+                print("No checkpoint found to resume from. Starting new training.")
+
+        for epoch in range(start_epoch, epochs):
             total_loss = 0
             # Shuffle data for each epoch
             permutation = np.random.permutation(num_samples)
@@ -83,8 +95,25 @@ class Network:
             avg_loss = total_loss / (num_samples / batch_size)
             epoch_losses.append(avg_loss)
             print(f"Epoch {epoch+1}/{epochs}, Average Loss: {avg_loss:.4f}")
+
+            # Save checkpoint after each epoch
+            if checkpoint_dir:
+                os.makedirs(checkpoint_dir, exist_ok=True)
+                checkpoint_path = os.path.join(checkpoint_dir, f"model_epoch_{epoch+1}.npz")
+                self.save_model(checkpoint_path)
         
         return epoch_losses # Return the collected losses
+
+    def _find_latest_checkpoint(self, checkpoint_dir):
+        if not os.path.exists(checkpoint_dir):
+            return None
+        checkpoints = [f for f in os.listdir(checkpoint_dir) if f.startswith('model_epoch_') and f.endswith('.npz')]
+        if not checkpoints:
+            return None
+        
+        # Sort by epoch number to find the latest
+        checkpoints.sort(key=lambda x: int(x.split('epoch_')[1].split('.')[0]))
+        return os.path.join(checkpoint_dir, checkpoints[-1])
 
     def predict(self, input_data):
         """

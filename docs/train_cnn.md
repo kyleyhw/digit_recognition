@@ -76,3 +76,21 @@ The script will print the training loss for each epoch and, upon completion, wil
 Below is a plot illustrating the training loss over epochs. A decreasing trend indicates that the network is learning and its predictions are becoming more accurate over time.
 
 ![Training Loss Plot](./images/training_loss.png)
+
+## Checkpointing (Pausing and Resuming Training)
+
+For long training runs, it's crucial to be able to save the model's progress and resume training later. Our `Network` class supports this through checkpointing:
+
+*   **Saving Checkpoints:** During training, after each epoch, the model's current weights and biases are saved to a `.npz` file in the `models/checkpoints/` directory. Each checkpoint file is named to include the epoch number (e.g., `model_epoch_1.npz`).
+*   **Resuming Training:** If `resume_from_checkpoint` is set to `True` in the `train` method, the network will automatically look for the latest checkpoint file in the specified `checkpoint_dir`. If found, it loads the parameters from that checkpoint and continues training from the next epoch.
+
+This allows you to interrupt training (e.g., if your computer shuts down or you need to use it for something else) and pick up exactly where you left off, saving valuable training time.
+
+## GPU Usage (CPU-Only Implementation)
+
+It's important to note that this "CNN from Scratch" implementation, built using pure NumPy, runs exclusively on the **CPU (Central Processing Unit)**.
+
+*   **Why CPU-Only?** The primary goal of this project is to understand the fundamental mathematics and algorithms of neural networks by implementing them from scratch. NumPy provides the necessary array manipulation capabilities for this educational purpose.
+*   **GPU Acceleration:** Modern deep learning frameworks (like PyTorch, TensorFlow, JAX) achieve significant speedups by leveraging **GPUs (Graphics Processing Units)**. GPUs are highly parallel processors optimized for the matrix multiplications and other numerical computations common in neural networks.
+*   **How GPUs Work (Briefly):** To utilize a GPU, the numerical operations would need to be offloaded to a GPU-accelerated library (e.g., NVIDIA's CuPy, which provides a NumPy-like interface for GPUs) or a full deep learning framework. This involves managing memory on the GPU and using GPU-specific kernels for computations.
+*   **Implication for this Project:** While our implementation is functional and educational, it will be considerably slower than a GPU-accelerated version, especially for larger datasets or more complex models. This is an inherent trade-off when building from first principles with CPU-bound libraries.
