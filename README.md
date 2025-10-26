@@ -69,7 +69,7 @@ This repository contains a from-scratch implementation of:
 └── train_mnist.py        # Main script to build, train, and evaluate the CNN.
 ```
 
-## Demonstration
+## Showcasing Model Capabilities
 
 To effectively showcase the capabilities of this Convolutional Neural Network, you can utilize the interactive GUI and the prediction script:
 
@@ -105,7 +105,7 @@ This script evaluates the trained model on a portion of the unseen test dataset 
 
 ---
 
-## How to Use
+## Getting Started: Setup and Training
 
 ### Prerequisites
 
