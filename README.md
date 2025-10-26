@@ -69,6 +69,42 @@ This repository contains a from-scratch implementation of:
 └── train_mnist.py        # Main script to build, train, and evaluate the CNN.
 ```
 
+## Demonstration
+
+To effectively showcase the capabilities of this Convolutional Neural Network, you can utilize the interactive GUI and the prediction script:
+
+### 1. Interactive GUI (`gui_predictor.py`)
+
+This provides a real-time, hands-on experience of the CNN's digit recognition abilities.
+
+*   **How to Use:**
+    1.  Ensure you have a trained model (e.g., by running `train_mnist.py` at least once).
+    2.  Execute the GUI script: `python gui_predictor.py`
+    3.  A window will appear with a black canvas. Use your mouse to draw a digit (0-9).
+    4.  Observe the "Prediction" label and the confidence bars on the right. The network will update its prediction and confidence levels in real-time as you draw.
+    5.  Click the "Clear" button to erase your drawing and try another digit.
+
+*   **What it Demonstrates:**
+    *   **Real-time Inference:** The network's ability to classify handwritten digits instantly.
+    *   **Robustness:** How well the model handles variations in handwriting style, thickness, and placement (thanks to the preprocessing steps).
+    *   **Confidence Levels:** The probabilistic output of the network, showing its certainty for each digit class.
+
+### 2. Prediction Script (`predict_mnist.py`)
+
+This script evaluates the trained model on a portion of the unseen test dataset and provides both quantitative and qualitative insights into its performance.
+
+*   **How to Use:**
+    1.  Ensure you have a trained model (e.g., `models/mnist_cnn_full_dataset.npz`).
+    2.  Execute the prediction script: `python predict_mnist.py`
+    3.  The script will print the overall test accuracy and save a visualization of sample predictions.
+
+*   **What it Demonstrates:**
+    *   **Generalization:** The model's performance on data it has never seen before.
+    *   **Accuracy:** The quantitative measure of how often the model makes correct predictions.
+    *   **Visual Examples:** The `Prediction Examples` plot (found in the [Visualizations](#visualizations) section below) shows specific instances of correct and incorrect classifications, allowing for qualitative assessment of the model's strengths and weaknesses.
+
+---
+
 ## How to Use
 
 ### Prerequisites
