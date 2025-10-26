@@ -64,3 +64,6 @@ mnist_data/train-labels-idx1-ubyte
 
 # MNIST compressed data file
 mnist_data/mnist.npz
+
+# Model checkpoints
+models/checkpoints/

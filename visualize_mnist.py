@@ -2,34 +2,36 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-# Ensure the mnist_loader script has been run to generate mnist.npz
-# If not, you might want to run it first: python mnist_loader.py
+# Assuming preprocess_mnist.py has been run to generate mnist_preprocessed.npz
+from preprocess_mnist import preprocess_mnist_data
 
-def visualize_mnist_samples(num_samples=10):
+def visualize_mnist_samples(num_samples=10, filepath="docs/images/sample_data.png"):
     """
-    Loads MNIST data from mnist.npz and visualizes a specified number of samples.
+    Loads preprocessed MNIST data and visualizes a specified number of samples.
     """
-    npz_path = os.path.join("mnist_data", "mnist.npz")
+    # Load the preprocessed data
+    (x_train, y_train), (x_test, y_test) = preprocess_mnist_data()
 
-    if not os.path.exists(npz_path):
-        print(f"Error: {npz_path} not found. Please run mnist_loader.py first to generate the dataset.")
-        return
+    # Reshape images from (N, 28, 28, 1) to (N, 28, 28) for imshow
+    x_train_reshaped = x_train.reshape(-1, 28, 28)
+    y_train_labels = np.argmax(y_train, axis=1)
 
-    with np.load(npz_path) as data:
-        train_images = data['train_images']
-        train_labels = data['train_labels']
-
-    # Select random samples
-    indices = np.random.choice(len(train_images), num_samples, replace=False)
+    # Select random samples from training data
+    indices = np.random.choice(len(x_train_reshaped), num_samples, replace=False)
 
     plt.figure(figsize=(12, 6))
     for i, idx in enumerate(indices):
         plt.subplot(2, num_samples // 2, i + 1)
-        plt.imshow(train_images[idx], cmap='gray')
-        plt.title(f"Label: {train_labels[idx]}")
+        plt.imshow(x_train_reshaped[idx], cmap='gray')
+        plt.title(f"Label: {y_train_labels[idx]}")
         plt.axis('off')
     plt.tight_layout()
-    plt.show()
+    
+    # Ensure the directory exists
+    os.makedirs(os.path.dirname(filepath), exist_ok=True)
+    plt.savefig(filepath)
+    print(f"Sample data plot saved to {filepath}")
+    plt.close() # Close the plot to free memory
 
 if __name__ == "__main__":
     visualize_mnist_samples(num_samples=10)

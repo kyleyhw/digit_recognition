@@ -119,11 +119,27 @@ This script will load the saved parameters and evaluate the model's accuracy.
 
 ---
 
-## Training Progress
+## Visualizations
 
-Below is a plot illustrating the training loss over epochs. A decreasing trend indicates that the network is learning and its predictions are becoming more accurate over time.
+To provide a clearer understanding of the data and the model's performance, we include several visualizations:
+
+### Sample Data Visuals
+
+Below are a few random samples from the MNIST training dataset, showcasing the handwritten digits that our CNN learns to recognize.
+
+![Sample MNIST Data](./docs/images/sample_data.png)
+
+### Training Progress: Loss Plot
+
+This plot illustrates the training loss over epochs. A decreasing trend indicates that the network is learning and its predictions are becoming more accurate over time.
 
 ![Training Loss Plot](./docs/images/training_loss.png)
+
+### Prediction Examples
+
+Here, we visualize several test images along with their true labels and the model's predictions. Correct predictions are marked in green, while incorrect ones are in red.
+
+![Prediction Examples](./docs/images/prediction_examples.png)
 
 ---
 
