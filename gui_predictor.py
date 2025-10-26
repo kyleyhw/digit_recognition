@@ -81,10 +81,19 @@ class DigitRecognizerApp:
         row = event.y // self.pixel_size
 
         if 0 <= col < self.cols and 0 <= row < self.rows:
-            # Draw only the single pixel
-            if self.image_array[row, col] < 1.0:
-                self.image_array[row, col] = 1.0
-                self.canvas.itemconfig(self.pixel_grid[row][col], fill="white")
+            # Simple anti-aliasing by using a brush
+            for r in range(max(0, row - 1), min(self.rows, row + 2)):
+                for c in range(max(0, col - 1), min(self.cols, col + 2)):
+                    if 0 <= c < self.cols and 0 <= r < self.rows:
+                        # Calculate distance for intensity falloff
+                        dist = np.sqrt((r - row) ** 2 + (c - col) ** 2)
+                        intensity = max(0, 1.0 - dist / 1.5)  # Adjust falloff radius
+                        new_val = self.image_array[r, c] + intensity
+                        self.image_array[r, c] = min(1.0, new_val)
+
+                        # Update color based on intensity
+                        gray_val = int(self.image_array[r, c] * 255)
+                        self.canvas.itemconfig(self.pixel_grid[r][c], fill=f'#%02x%02x%02x' % (gray_val, gray_val, gray_val))
         self.predict_realtime()
 
     def clear_canvas(self):
