@@ -96,6 +96,14 @@ This script will load the saved parameters and evaluate the model's accuracy.
 
 ---
 
+## Training Progress
+
+Below is a plot illustrating the training loss over epochs. A decreasing trend indicates that the network is learning and its predictions are becoming more accurate over time.
+
+![Training Loss Plot](./docs/images/training_loss.png)
+
+---
+
 ## Documentation Hub
 
 This project is designed to be an educational resource. The documentation below will walk you through the fundamental theory and implementation of a convolutional neural network, assuming no prior background in machine learning.

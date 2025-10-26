@@ -70,3 +70,9 @@ The script will print the training loss for each epoch and, upon completion, wil
 *   **Dense Layer:** A standard fully connected neural network layer where each input neuron is connected to each output neuron. These layers are typically used in the final stages of a CNN to perform classification based on the features extracted by the convolutional layers.
 *   **Softmax Layer:** An activation function used in the output layer for multi-class classification. It converts the raw output scores (logits) from the final dense layer into a probability distribution over the classes, where all probabilities sum to 1.
 *   **Categorical Cross-Entropy Loss:** The loss function used for multi-class classification. It measures the difference between the predicted probability distribution (from the Softmax layer) and the true distribution (the one-hot encoded label).
+
+## Training Progress: Loss Plot
+
+Below is a plot illustrating the training loss over epochs. A decreasing trend indicates that the network is learning and its predictions are becoming more accurate over time.
+
+![Training Loss Plot](./images/training_loss.png)

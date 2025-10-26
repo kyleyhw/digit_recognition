@@ -45,11 +45,13 @@ class Network:
     def train(self, X_train, y_train, epochs, learning_rate, batch_size=32):
         """
         Orchestrates the training loop.
+        Returns a list of average losses for each epoch.
         """
         if self.loss_function is None:
             raise ValueError("Loss function not compiled. Call network.compile(loss_function) first.")
 
         num_samples = X_train.shape[0]
+        epoch_losses = [] # List to store average loss per epoch
 
         for epoch in range(epochs):
             total_loss = 0
@@ -79,7 +81,10 @@ class Network:
                     pbar.set_postfix(loss=f"{loss:.4f}")
             
             avg_loss = total_loss / (num_samples / batch_size)
+            epoch_losses.append(avg_loss)
             print(f"Epoch {epoch+1}/{epochs}, Average Loss: {avg_loss:.4f}")
+        
+        return epoch_losses # Return the collected losses
 
     def predict(self, input_data):
         """

@@ -1,4 +1,7 @@
 import numpy as np
+import matplotlib.pyplot as plt # Import matplotlib
+import os # Import os for path manipulation
+
 from src.network import Network
 from src.layers import Convolutional, ReLU, MaxPooling, Flatten, Dense, Softmax
 from src.losses import CategoricalCrossEntropy
@@ -11,10 +14,10 @@ def main():
     
     # For faster development, let's use a subset of the data
     # Remove these lines to train on the full dataset
-    x_train = x_train
-    y_train = y_train
-    x_test = x_test
-    y_test = y_test
+    x_train = x_train[:1000]
+    y_train = y_train[:1000]
+    x_test = x_test[:200]
+    y_test = y_test[:200]
     
     print(f"Training data shape: {x_train.shape}")
     print(f"Test data shape: {x_test.shape}")
@@ -57,11 +60,28 @@ def main():
 
     # --- Train the Network ---
     print("\n--- Training the Network ---")
-    net.train(x_train, y_train, epochs=10, learning_rate=0.01, batch_size=32)
+    epoch_losses = net.train(x_train, y_train, epochs=10, learning_rate=0.01, batch_size=32)
+
+    # --- Plotting Loss ---
+    print("\n--- Plotting Loss --- ")
+    plt.figure(figsize=(10, 6))
+    plt.plot(range(1, len(epoch_losses) + 1), epoch_losses, marker='o')
+    plt.title('Training Loss per Epoch')
+    plt.xlabel('Epoch')
+    plt.ylabel('Average Loss')
+    plt.grid(True)
+    
+    # Create docs/images directory if it doesn't exist
+    plot_dir = "docs/images"
+    os.makedirs(plot_dir, exist_ok=True)
+    plot_path = os.path.join(plot_dir, "training_loss.png")
+    plt.savefig(plot_path)
+    print(f"Loss plot saved to {plot_path}")
+    # plt.show() # Uncomment to display plot during execution
 
     # --- Save the Trained Model ---
     print("\n--- Saving the Trained Model ---")
-    net.save_model("models/mnist_cnn_full_set.npz")
+    net.save_model("models/mnist_cnn_subset_1000.npz")
 
     # --- Evaluate the Network ---
     print("\n--- Evaluating the Network ---")

@@ -41,6 +41,17 @@ Once the network makes a prediction, we need a way to measure how good (or bad) 
 
 The goal of training is to adjust the weights and biases to minimize this loss value.
 
+### Interpreting Loss Values
+
+During training, you will observe the loss value decreasing over epochs. This is a good sign, indicating that your network is learning and improving its ability to make accurate predictions. However, the absolute value of the loss itself is often less important than its trend:
+
+*   **Decreasing Loss:** The network is learning. This is what we want to see.
+*   **Stagnant Loss:** The network might have stopped learning (e.g., due to a "dying ReLU" or a learning rate that is too small), or it might have reached a local minimum.
+*   **Increasing Loss:** The network is diverging, meaning it's getting worse at its task. This often indicates a problem with the learning rate (too high) or the network architecture.
+*   **Zero Loss:** While ideal, a loss of exactly zero, especially early in training, can sometimes indicate overfitting (the network has memorized the training data but won't generalize well to new data).
+
+Monitoring the loss trend is crucial for debugging and understanding your model's training dynamics.
+
 ## Backpropagation and Gradient Descent
 
 This is the core of the learning process.
