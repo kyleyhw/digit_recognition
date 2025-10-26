@@ -208,3 +208,6 @@ Follow these documents in order for a comprehensive understanding.
 
 5.  **[Training the CNN on MNIST](./docs/train_cnn.md)**
     *   See how all the pieces come together. This document breaks down the final `train_mnist.py` script, explaining the specific architecture of our digit-recognizing CNN and how we train and evaluate it.
+
+6.  **[GUI Predictor Documentation](./docs/gui_predictor.md)**
+    *   Explore the interactive graphical user interface that allows you to draw digits and see real-time predictions from the trained CNN, including details on image preprocessing and confidence display.
