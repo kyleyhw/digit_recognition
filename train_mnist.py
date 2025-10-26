@@ -60,7 +60,7 @@ def main():
     # --- Generate Loss Plot for Subset Training (10 epochs) ---
     print("\n--- Training on Subset for Loss Plot (10 epochs) ---")
     net_subset = build_cnn_model()
-    checkpoint_dir = "models/checkpoints"
+    checkpoint_dir = "checkpoints"
     os.makedirs(checkpoint_dir, exist_ok=True)
     
     # Ensure no old subset checkpoints interfere

@@ -66,4 +66,4 @@ mnist_data/train-labels-idx1-ubyte
 mnist_data/mnist.npz
 
 # Model checkpoints
-models/checkpoints/
+checkpoints/

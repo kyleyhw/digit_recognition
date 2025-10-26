@@ -54,8 +54,9 @@ This repository contains a from-scratch implementation of:
 
 ```
 .
+├── checkpoints/         # Saved model checkpoints during training.
 ├── docs/                 # Detailed documentation for concepts and classes.
-├── models/               # Saved model parameters.
+├── models/               # Saved final model parameters.
 ├── src/                  # Core library code for the neural network.
 │   ├── __init__.py
 │   ├── layers.py

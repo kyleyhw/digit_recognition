@@ -190,8 +190,8 @@ Parameter initialization refers to the process of setting the initial values of 
 
 For long training runs, it's crucial to be able to save the model's progress and resume training later. Our `Network` class supports this through checkpointing:
 
-*   **Saving Checkpoints:** During training, after each epoch, the model's current weights and biases are saved to a `.npz` file in the `models/checkpoints/` directory. Each checkpoint file is named to include the epoch number (e.g., `model_epoch_1.npz`).
-*   **Resuming Training:** If `resume_from_checkpoint` is set to `True` in the `train` method, the network will automatically look for the latest checkpoint file in the specified `checkpoint_dir`. If found, it loads the parameters from that checkpoint and continues training from the next epoch.
+*   **Saving Checkpoints:** During training, after each epoch, the model's current weights and biases are saved to a `.npz` file in the top-level `checkpoints/` directory. Each checkpoint file is named using a prefix (e.g., `model_full_epoch_1.npz` or `model_subset_plot_epoch_1.npz`) to distinguish between different training runs.
+*   **Resuming Training:** If `resume_from_checkpoint` is set to `True` in the `train` method, the network will automatically look for the latest checkpoint file with the specified `checkpoint_prefix` in the `checkpoints/` directory. If found, it loads the parameters from that checkpoint and continues training from the next epoch.
 
 This allows you to interrupt training (e.g., if your computer shuts down or you need to use it for something else) and pick up exactly where you left off, saving valuable training time.
 
