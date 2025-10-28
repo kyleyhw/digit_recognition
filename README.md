@@ -162,19 +162,19 @@ To provide a clearer understanding of the data and the model's performance, we i
 
 ### Sample Data Visuals
 
-Below are a few random samples from the MNIST training dataset, showcasing the diversity of handwritten digits that our CNN learns to recognize. This plot helps to visualize the raw input data the model processes.
+Below are a few random samples from the MNIST training dataset, showcasing the handwritten digits that our CNN learns to recognize.
 
 ![Sample MNIST Data](./docs/images/sample_data.png)
 
 ### Training Progress: Loss Plots
 
-This plot illustrates the training loss over epochs when the model is trained on a small subset of the MNIST data. This approach is taken in the interest of runtime for demonstration purposes, allowing for quicker experimentation and verification of the training setup. A consistently decreasing loss indicates that the model is effectively learning from the data and its predictions are improving over time.
+This plot illustrates the training loss over epochs when the model is trained on a small subset of the MNIST data. This approach is taken in the interest of runtime for demonstration purposes, allowing for quicker experimentation and verification of the training setup.
 
 ![Subset Training Loss Plot](./docs/images/training_loss_subset.png)
 
 ### Prediction Examples
 
-Here, we visualize several test images along with their true labels and the model's predictions. Correct predictions are marked in green, while incorrect ones are in red. This visual allows for a qualitative assessment of the model's generalization capabilities and helps identify specific digits or styles that the model might struggle with.
+Here, we visualize several test images along with their true labels and the model's predictions. Correct predictions are marked in green, while incorrect ones are in red.
 
 ![Prediction Examples](./docs/images/prediction_examples.png)
 
