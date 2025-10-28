@@ -168,7 +168,25 @@ Below are a few random samples from the MNIST training dataset, showcasing the d
 
 ### Training Progress: Loss Plots
 
-This plot illustrates the training loss over epochs when the model is trained on a small subset of the MNIST data. This approach is taken in the interest of runtime for demonstration purposes, allowing for quicker experimentation and verification of the training setup. A consistently decreasing loss indicates that the model is effectively learning from the data and its predictions are improving over time.
+This plot illustrates the training loss over epochs when the model is trained on a small subset of the MNIST data. This approach is taken in the interest of runtime for demonstration purposes, allowing for quicker experimentation and verification of the training setup.
+
+**Understanding the Loss Value (Categorical Cross-Entropy):**
+
+The loss value, specifically Categorical Cross-Entropy (CCE) in this project, quantifies the discrepancy between the model's predicted probability distribution and the true probability distribution (the actual label).
+
+*   **Intuitive Meaning:**
+    *   **High Loss:** Means the model is very "surprised" by the correct answer. For example, if the true digit is '7' but the model predicted '1' with high confidence, the loss will be very high.
+    *   **Low Loss:** Means the model's predicted probability for the correct class is high, and it's not "surprised" by the true answer.
+    *   **Perfect Prediction (Loss = 0):** If the model predicts the correct class with 100% certainty (probability 1.0), the CCE loss for that sample would be 0.
+
+*   **Interpreting Absolute Values:**
+    *   **Loss of ~2.3:** For a 10-class classification problem, if the model were predicting purely randomly (i.e., 10% chance for each class), the CCE loss would be approximately $-\log(0.1) \approx 2.3$. So, a loss value around 2.3 or higher at the beginning of training indicates the model is essentially guessing or performing worse than random.
+    *   **Loss of ~0.0 - 0.5 (or lower):** A loss in this range typically indicates that the model is performing very well, assigning high probabilities to the correct classes. The closer to 0, the more confident and accurate the model is.
+
+*   **Trend is Key:** While absolute values provide context, the *trend* of the loss curve is most important:
+    *   **Decreasing Trend:** This is what we want to see. It signifies that the model is learning and improving its predictions over time.
+    *   **Stagnant or Oscillating Trend:** Could indicate issues like a learning rate that's too low (stagnant) or too high (oscillating), or that the model has reached its learning capacity.
+    *   **Increasing Trend:** A clear sign of problems, often due to a learning rate that is too high, causing the model to diverge.
 
 ![Subset Training Loss Plot](./docs/images/training_loss_subset.png)
 
