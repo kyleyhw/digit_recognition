@@ -6,10 +6,10 @@ The `Network` class is the heart of our neural network library. It acts as a con
 
 ## Core Concepts
 
-*   **Sequential Model:** This `Network` class represents a sequential model, which is a linear stack of layers. You simply `.add()` layers one after another to build the model architecture.
-*   **Training Loop:** The process of training a neural network involves repeatedly showing it data, allowing it to make predictions, comparing those predictions to the true targets (calculating the **loss**), and then adjusting the internal parameters (weights and biases) to reduce that loss. This adjustment process is called **backpropagation** and is driven by an **optimizer** (in our case, Stochastic Gradient Descent).
-*   **Epoch:** One complete pass through the entire training dataset.
-*   **Batch:** Instead of processing the entire dataset at once, the data is broken into smaller chunks called batches. The network's parameters are updated after each batch. This is known as **mini-batch gradient descent**.
+*   **Sequential Model:** This `Network` class represents a sequential model, which is a linear stack of layers. You simply `.add()` layers one after another to build the model architecture [3].
+*   **Training Loop:** The process of training a neural network involves repeatedly showing it data, allowing it to make predictions, comparing those predictions to the true targets (calculating the **loss**), and then adjusting the internal parameters (weights and biases) to reduce that loss. This adjustment process is called **backpropagation** and is driven by an **optimizer** (in our case, Stochastic Gradient Descent) [3].
+*   **Epoch:** One complete pass through the entire training dataset [3].
+*   **Batch:** Instead of processing the entire dataset at once, the data is broken into smaller chunks called batches. The network's parameters are updated after each batch. This is known as **mini-batch gradient descent** [3].
 
 ## Class Definition
 
@@ -52,7 +52,7 @@ class Network:
 
 ### `add(self, layer)`
 
-*   **Purpose:** Adds a layer to the neural network.
+*   **Purpose:** Adds a layer to the network.
 *   **Parameters:**
     *   `layer`: An instance of a class inheriting from `Layer` (e.g., `Dense`, `ReLU`, `Convolutional`).
 *   **Description:** Appends the provided `layer` object to the `self.layers` list. The order in which layers are added defines the architecture of the network.
@@ -112,3 +112,11 @@ class Network:
 *   **Parameters:**
     *   `filepath`: The path to the file from which to load the model parameters.
 *   **Description:** Loads the parameters from the specified file and assigns them to the corresponding layers in the network. The network architecture defined in the code must be identical to the one used when the model was saved.
+
+## References
+
+[1] LeCun, Y., Bottou, L., Bengio, Y., & Haffner, P. (1998). Gradient-based learning applied to document recognition. *Proceedings of the IEEE*, 86(11), 2278-2324.
+[2] LeCun, Y., & Cortes, C. (1998). The MNIST database of handwritten digits.
+[3] Goodfellow, I., Bengio, Y., & Courville, A. (2016). *Deep Learning*. MIT Press.
+[4] Glorot, X., & Bengio, Y. (2010). Understanding the difficulty of training deep feedforward neural networks. *Proceedings of the thirteenth international conference on artificial intelligence and statistics*, 249-256.
+[5] Chellapilla, K., Puri, S., & Simard, P. (2006). High Performance Convolutional Neural Networks for Document Processing. *Tenth International Workshop on Frontiers in Handwriting Recognition*.
