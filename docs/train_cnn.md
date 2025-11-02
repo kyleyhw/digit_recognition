@@ -1,8 +1,8 @@
 # Training a CNN on MNIST
 
-This document explains the `train_mnist.py` script, which serves as the main entry point for building, training, and evaluating our from-scratch Convolutional Neural Network (CNN) on the MNIST dataset [1], [2], [3].
+This document explains the `train_mnist.py` script, which serves as the main entry point for building, training, and evaluating our from-scratch Convolutional Neural Network (CNN) on the MNIST dataset [1, 2, 3].
 
-(For a detailed breakdown of each layer, see [The Layers Explained](./Layers_Explained.md). For an introduction to the core concepts, see [Fundamental Concepts](./Concepts.md).)
+(For a detailed breakdown of each layer, see [The Layers Explained](./layers_explained.md). For an introduction to the core concepts, see [Fundamental Concepts](./concepts.md).)
 
 ## The `train_mnist.py` Script
 
@@ -53,7 +53,7 @@ The architecture is inspired by the classic LeNet-5 model [1], which is highly e
 
 ### Design Rationale for LeNet-5 Architecture
 
-The LeNet-5 inspired architecture used in this project is particularly well-suited for digit recognition tasks like MNIST [1], [3] due to several key design principles:
+The LeNet-5 inspired architecture used in this project is particularly well-suited for digit recognition tasks like MNIST [1, 3] due to several key design principles:
 
 *   **Spatial Feature Extraction:** The initial convolutional layers are designed to learn local features such as edges, corners, and textures. By stacking these layers, the network progressively learns more complex and abstract representations of the input image [3].
 *   **Dimensionality Reduction and Translation Invariance:** MaxPooling layers reduce the spatial dimensions of the feature maps, which helps in making the model more robust to small shifts or distortions in the input image. This downsampling also reduces the computational cost in subsequent layers [3].
@@ -207,7 +207,15 @@ It's important to note that this "CNN from Scratch" implementation, built using 
 *   **How GPUs Work (Briefly):** To utilize a GPU, the numerical operations would need to be offloaded to a GPU-accelerated library (e.g., NVIDIA's CuPy, which provides a NumPy-like interface for GPUs) or a full deep learning framework. This involves managing memory on the GPU and using GPU-specific kernels for computations.
 *   **Implication for this Project:** While our implementation is functional and educational, it will be considerably slower than a GPU-accelerated version, especially for larger datasets or more complex models. This is an inherent trade-off when building from first principles with CPU-bound libraries.
 
+---
+
 ## References
+
+[1]: http://yann.lecun.com/exdb/publis/pdf/lecun-98.pdf
+[2]: http://yann.lecun.com/exdb/mnist/
+[3]: https://www.deeplearningbook.org/
+[4]: http://proceedings.mlr.press/v9/glorot10a/glorot10a.pdf
+[5]: https://www.microsoft.com/en-us/research/wp-content/uploads/2017/04/chellapilla-simard-puri-IWFHR-2006.pdf
 
 [1] LeCun, Y., Bottou, L., Bengio, Y., & Haffner, P. (1998). Gradient-based learning applied to document recognition. *Proceedings of the IEEE*, 86(11), 2278-2324.
 [2] LeCun, Y., & Cortes, C. (1998). The MNIST database of handwritten digits.

@@ -2,7 +2,7 @@
 
 The `Network` class is the heart of our neural network library. It acts as a container for a sequence of layers, and provides the core logic to train the model on data and make predictions.
 
-(See [Fundamental Concepts](./Concepts.md) for an introduction to the core ideas of a neural network.)
+(See [Fundamental Concepts](./concepts.md) for an introduction to the core ideas of a neural network.)
 
 ## Core Concepts
 
@@ -113,7 +113,15 @@ class Network:
     *   `filepath`: The path to the file from which to load the model parameters.
 *   **Description:** Loads the parameters from the specified file and assigns them to the corresponding layers in the network. The network architecture defined in the code must be identical to the one used when the model was saved.
 
+---
+
 ## References
+
+[1]: http://yann.lecun.com/exdb/publis/pdf/lecun-98.pdf
+[2]: http://yann.lecun.com/exdb/mnist/
+[3]: https://www.deeplearningbook.org/
+[4]: http://proceedings.mlr.press/v9/glorot10a/glorot10a.pdf
+[5]: https://www.microsoft.com/en-us/research/wp-content/uploads/2017/04/chellapilla-simard-puri-IWFHR-2006.pdf
 
 [1] LeCun, Y., Bottou, L., Bengio, Y., & Haffner, P. (1998). Gradient-based learning applied to document recognition. *Proceedings of the IEEE*, 86(11), 2278-2324.
 [2] LeCun, Y., & Cortes, C. (1998). The MNIST database of handwritten digits.

@@ -1,8 +1,8 @@
 # Loss Functions Documentation
 
-Loss functions are a crucial component of neural networks. They measure how well the model's predictions match the true target values. The output of a loss function is a single scalar value, often referred to as the "loss" or "error," which quantifies the discrepancy. Loss functions are a crucial component of neural networks, quantifying the discrepancy between the network's predictions and the true target values. During training, the goal of the optimization algorithm is to minimize this loss [3].
+Loss functions are a crucial component of neural networks, quantifying the discrepancy between the network's predictions and the true target values. During training, the goal of the optimization algorithm is to minimize this loss [3].
 
-(See [Fundamental Concepts](./Concepts.md) for an introduction to Loss Functions, Training, and Optimization.)
+(See [Fundamental Concepts](./concepts.md) for an introduction to Loss Functions, Training, and Optimization.)
 
 ## Base Class: `Loss`
 
@@ -82,7 +82,15 @@ The loss is low when the predicted distribution is very similar to the true dist
     $ \frac{\partial L}{\partial \text{input to Softmax}} = y_{pred} - y_{true} $
     This simplification is a key reason why these two are almost always used together in classification tasks [3].
 
+---
+
 ## References
+
+[1]: http://yann.lecun.com/exdb/publis/pdf/lecun-98.pdf
+[2]: http://yann.lecun.com/exdb/mnist/
+[3]: https://www.deeplearningbook.org/
+[4]: http://proceedings.mlr.press/v9/glorot10a/glorot10a.pdf
+[5]: https://www.microsoft.com/en-us/research/wp-content/uploads/2017/04/chellapilla-simard-puri-IWFHR-2006.pdf
 
 [1] LeCun, Y., Bottou, L., Bengio, Y., & Haffner, P. (1998). Gradient-based learning applied to document recognition. *Proceedings of the IEEE*, 86(11), 2278-2324.
 [2] LeCun, Y., & Cortes, C. (1998). The MNIST database of handwritten digits.
